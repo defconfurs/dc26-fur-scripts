@@ -1,13 +1,9 @@
 # main.py -- put your code here!
 import pyb
 import dcfurs
-from pyb import Pin
-from pyb import Timer
-from pyb import Accel
+import badge
 
 print("Hello World!")
-dcfurs.matrix_init()
-dcfurs.clear()
 
 def owo():
     dcfurs.clear()
@@ -70,46 +66,14 @@ def boop():
     dcfurs.set_pixel(14,3,256)
     dcfurs.set_pixel(15,3,256)
 
-class PushSW(Pin):
-    def __init__(self, activelow=False):
-        self.activelow = activelow
-        self.prev = self.value()
-    
-    def press(self):
-        if self.activelow and not self.prev:
-            self.prev = self.value()
-            return self.prev
-        elif self.prev and not self.activelow:
-            self.prev = self.value()
-            return self.prev
-        else:
-            self.prev = self.value()
-            return 0
-
-## Setup the Accelerometer for tap detection
-imu = pyb.Accel()
-imu.write(0x7, 0x00)    # Switch to standby mode
-imu.write(0x8, 0x00)    # Set sampling rate to 120Hz
-imu.write(0x6, 0x04)    # Enable tap detection interrupt
-imu.write(0x9, 0x0f)    # Set tap threshold to 15 counts.
-imu.write(0x7, 0xc1)    # Set push-pull active-high interrupt, back to active mode.
-
-## Setup the input pins
-wkup = pyb.Pin('MMA_INT', Pin.IN)
-right = PushSW(Pin('SW1', Pin.IN))
-left = PushSW(Pin('SW2', Pin.IN, pull=Pin.PULL_DOWN))
-
 ## Run the main test pattern
 print("Starting test pattern...")
-def mtick(timer):
-    dcfurs.matrix_loop()
-mtimer = pyb.Timer(5, freq=16000, callback=mtick)
 
 ## Wait for a tap event.
 owo()
-while not wkup.value():
-    pyb.delay(100)
-boop()
+#while not wkup.value():
+#    pyb.delay(100)
+#boop()
 pyb.delay(3000)
 
 ## Run the show.
@@ -123,13 +87,20 @@ while True:
     ival = anim.interval
     while ival > 0:
         ## Change animation on button press
-        if right.press():
+        if badge.right.event():
             selected = (selected + 1) % len(available)
             anim = available[selected]()
-        elif left.press():
+        elif badge.left.event():
             if selected == 0:
                 selected = len(available)
             selected = selected - 1
+            anim = available[selected]()
+
+        ## Check for boops
+        tilt = badge.imu.read(0x03)
+        if (tilt & 0x20) != 0:
+            boop()
+            pyb.delay(1000)
             anim = available[selected]()
 
         ## Run the animation timing
