@@ -70,8 +70,21 @@ def boop():
     dcfurs.set_pixel(14,3,256)
     dcfurs.set_pixel(15,3,256)
 
-def mtick(timer):
-    dcfurs.matrix_loop()
+class PushSW(Pin):
+    def __init__(self, activelow=False):
+        self.activelow = activelow
+        self.prev = self.value()
+    
+    def press(self):
+        if self.activelow and not self.prev:
+            self.prev = self.value()
+            return self.prev
+        elif self.prev and not self.activelow:
+            self.prev = self.value()
+            return self.prev
+        else:
+            self.prev = self.value()
+            return 0
 
 ## Setup the Accelerometer for tap detection
 imu = pyb.Accel()
@@ -80,11 +93,17 @@ imu.write(0x8, 0x00)    # Set sampling rate to 120Hz
 imu.write(0x6, 0x04)    # Enable tap detection interrupt
 imu.write(0x9, 0x0f)    # Set tap threshold to 15 counts.
 imu.write(0x7, 0xc1)    # Set push-pull active-high interrupt, back to active mode.
+
+## Setup the input pins
 wkup = pyb.Pin('MMA_INT', Pin.IN)
+right = PushSW(Pin('SW1', Pin.IN))
+left = PushSW(Pin('SW2', Pin.IN, pull=Pin.PULL_DOWN))
 
 ## Run the main test pattern
 print("Starting test pattern...")
-mtimer = pyb.Timer(4, freq=16000, callback=mtick)
+def mtick(timer):
+    dcfurs.matrix_loop()
+mtimer = pyb.Timer(5, freq=16000, callback=mtick)
 
 ## Wait for a tap event.
 owo()
@@ -95,8 +114,28 @@ pyb.delay(3000)
 
 ## Run the show.
 import animations
-x = animations.rand()
-anim = x()
+selected = 0
+available = animations.all()
+anim = available[selected]()
+
 while True:
     anim.draw()
-    pyb.delay(anim.interval)
+    ival = anim.interval
+    while ival > 0:
+        ## Change animation on button press
+        if right.press():
+            selected = (selected + 1) % len(available)
+            anim = available[selected]()
+        elif left.press():
+            if selected == 0:
+                selected = len(available)
+            selected = selected - 1
+            anim = available[selected]()
+
+        ## Run the animation timing
+        if ival > 10:
+            pyb.delay(10)
+            ival -= 10
+        else:
+            pyb.delay(ival)
+            ival = 0
