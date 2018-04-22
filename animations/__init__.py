@@ -1,6 +1,7 @@
 from animations.cylon import cylon
 from animations.dos import dos
 from animations.rain import rain
+from animations.worm import worm
 
 ## Generate a list of all animation classes
 import sys
