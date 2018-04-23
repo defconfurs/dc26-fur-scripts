@@ -4,6 +4,7 @@ from animations.dos import dos
 from animations.worm import worm
 from animations.rain import rain
 from animations.cylon import cylon
+from animations.diags import diags
 
 ## Generate a list of all animation classes
 import sys
