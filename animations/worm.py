@@ -19,11 +19,11 @@ class worm:
       return 1
     elif x == 0 and y == 0: # rounded rectangle
       return 1
-    elif x == 18 and y == 0: # rounded rectangle
+    elif x == 17 and y == 0: # rounded rectangle
       return 1
-    elif x == 0 and y == 7: # rounded rectangle
+    elif x == 0 and y == 6: # rounded rectangle
       return 1
-    elif x == 18 and y == 7: # rounded rectangle
+    elif x == 17 and y == 6: # rounded rectangle
       return 1
     elif x > 6 and x < 11 and y == 5: # nose top
       return 1
