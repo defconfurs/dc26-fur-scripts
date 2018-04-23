@@ -3,6 +3,7 @@ from animations.dos import dos
 from animations.rain import rain
 from animations.worm import worm
 from animations.fur import fur
+from animations.kanye import kanye
 
 ## Generate a list of all animation classes
 import sys
