@@ -16,7 +16,6 @@ class diags:
 
   def __init__(self):
     self.reset_fbuf()
-    self.next_blink = random.randint(self.ticks_per_sec * 10, self.ticks_per_sec * 20)
 
   def reset_fbuf(self):
     self.fbuf = [bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18)]
