@@ -3,9 +3,10 @@ import pyb
 import dcfurs
 import badge
 
-print("Hello World!")
+print("Booting...")
 
 def owo():
+    """Currently Unused"""
     dcfurs.clear()
     ## Draw the Oh's
     for x in range(1,6):
@@ -30,6 +31,7 @@ def owo():
     dcfurs.set_pixel(11,3,256)
 
 def boop():
+    """Currently Unused"""
     dcfurs.clear()
     # Gimmie a B!
     for x in range(0,7):
@@ -66,15 +68,10 @@ def boop():
     dcfurs.set_pixel(14,3,256)
     dcfurs.set_pixel(15,3,256)
 
-## Run the main test pattern
-print("Starting test pattern...")
-
 ## Wait for a tap event.
-owo()
-#while not wkup.value():
-#    pyb.delay(100)
+#owo()
 #boop()
-pyb.delay(3000)
+#pyb.delay(3000)
 
 ## Run the show.
 import animations
@@ -96,12 +93,12 @@ while True:
             selected = selected - 1
             anim = available[selected]()
 
-        ## Check for boops
-        tilt = badge.imu.read(0x03)
-        if (tilt & 0x20) != 0:
-            boop()
-            pyb.delay(1000)
-            anim = available[selected]()
+#        ## Check for boops
+#        tilt = badge.imu.read(0x03)
+#        if (tilt & 0x20) != 0:
+#            boop()
+#            pyb.delay(1000)
+#            anim = available[selected]()
 
         ## Run the animation timing
         if ival > 10:
