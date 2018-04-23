@@ -1,6 +1,6 @@
 """Furry Face Simulator 
 Features:
-  * Will randomly blink every 10 - 20 seconds if no large-scale movements happen
+  * Will randomly blink every 10 - 20 seconds if no large-scale movements happen (winks)
   * Will track eyes with small nudges in up / down, left / right tilts
   * Will wink left/right if tilted too far
   * Will close eyes if held upside down
