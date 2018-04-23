@@ -5,6 +5,7 @@ Features:
   * Will track eyes with small nudges in up / down, left / right tilts
   * Will wink left/right if tilted too far
   * Will close eyes if held upside down
+  * Will close eyes when shaken
 """
 
 import dcfurs
@@ -56,7 +57,10 @@ class fur:
       move_x = 1
     elif ty > 16:
       move_x = -1
-    if ty < -48:
+    if (badge.imu.read(0x3) & 0x80) != 0: # Shake event
+      faceBuf = self.blinkFace
+      self.stop_blink = random.randint(int(self.ticks_per_sec * .2), int(self.ticks_per_sec * .45))
+    elif ty < -48:
       faceBuf = self.winkRightFace
       self.last_blink = 0
     elif ty > 48:
@@ -64,6 +68,7 @@ class fur:
       self.last_blink = 0
     elif tx < -48:
       faceBuf = self.blinkFace
+      self.stop_blink = random.randint(int(self.ticks_per_sec * .2), int(self.ticks_per_sec * .45))
       self.last_blink = 0
     elif self.stop_blink > 0:
       self.stop_blink -= 1

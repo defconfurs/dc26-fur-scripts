@@ -1,4 +1,5 @@
 from animations.fur import fur
+from animations.seizure import seizure 
 from animations.kanye import kanye
 from animations.dos import dos
 from animations.worm import worm
