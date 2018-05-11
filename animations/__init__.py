@@ -1,12 +1,12 @@
-from animations.fur import fur
-from animations.seizure import seizure 
-from animations.kanye import kanye
-from animations.dos import dos
-from animations.worm import worm
+#from animations.fur import fur
+#from animations.seizure import seizure 
+#from animations.kanye import kanye
+#from animations.dos import dos
+#from animations.worm import worm
 from animations.rain import rain
 from animations.cylon import cylon
 from animations.diags import diags
-from animations.emotes import emotes
+#from animations.emotes import emotes
 from animations.pong import pong
 
 ## Generate a list of all animation classes
