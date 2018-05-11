@@ -7,6 +7,7 @@ from animations.rain import rain
 from animations.cylon import cylon
 from animations.diags import diags
 from animations.emotes import emotes
+from animations.pong import pong
 
 ## Generate a list of all animation classes
 import sys

@@ -79,6 +79,8 @@ selected = 0
 available = animations.all()
 anim = available[selected]()
 
+timeout = 120000
+
 while True:
     anim.draw()
     ival = anim.interval
@@ -104,6 +106,16 @@ while True:
         if ival > 10:
             pyb.delay(10)
             ival -= 10
+            timeout -= 10
         else:
             pyb.delay(ival)
+            timeout -= ival
             ival = 0
+        
+    ## Rotate through animations every 60 seconds.
+    if timeout < 0:
+        owo()
+        pyb.delay(5000)
+        selected = (selected + 1) % len(available)
+        anim = available[selected]()
+        timeout = 120000

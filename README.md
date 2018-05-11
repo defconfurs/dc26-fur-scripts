@@ -15,12 +15,32 @@ At your disposal, you'll find:
     - TBD for capacative touch
     - #badgelife shitty addon connector
 
+Updating Firmware
+-----------------
+The STM32F401 microcontroller features a DFU bootloader, which is capable of updating
+its firmware via USB. From a Linux or OSX machine, you will need the `firmware.dfu`
+image, as well as the `dfu-util` program. To apply a firwmare update, perform the
+following steps.
+
+1. Completely power down the badge by removing the batteries and USB power.
+2. Power the badge by USB while holding down the left button by the shitty addon header.
+3. Execute the command `dfu-util -a 0 -d 0483:df11 -D firmware.dfu`. Note that this
+    may require `sudo` depending on your operating system and USB permissions.
+4. Wait for the upgrade to complete, which may take up to 30 seconds.
+5. Unplug the badge from USB to restart and apply the firmware update.
+
 Badge Module
 ------------
 The `badge` module is implemented in `badge.py` and contains all the setup necessary
 to bring your badge to life and operate the peripherals correctly. It is recommended
 that you initialize your badge properly by adding an `import badge` statement at the
 top of your `main.py` script.
+
+### `badge.imu`
+This contains an instance of the MMA7660 accelerometer, which has been configured to
+perform wakeup and tap detection on the badge. The accelerometer is also available
+for orientation detection. Please refer to the micropython documentation for the API
+to the `pyb.Accel` class.
 
 ### `badge.trysuspend()`
 Check if the badge is in a state that can be put to standby mode, when in this state
@@ -59,14 +79,28 @@ high priority timer.
 ### `dcfurs.clear()`
 Clear the LED matrix, setting all pixels to an off state.
 
+### `dcfurs.set_row(row, bitmap)`
+Set the pixels for an entire row using a bitmap of pixel on/off values.
+
 ### `dcfurs.set_pixel(row, col, value=True)`
 Sets the intensity of a single pixel using its row and column coordinates in the matrix.
 The `value` parameter can provide a PWM intensity value. Integer values in the range of
 zero to 256 control the intensity of the pixel, otherwise the truth value will either
 set the pixel to full intensity, or switch it off.
 
-### `dcfurs.set_row(row, bitmap)`
-Set the pixels for an entire row using a bitmap of pixel on/off values.
+### `dcfurs.has_pixel(row, col)`
+Checks if the pixel at the given row and colum exists in the LED matrix. Due to the shape
+of the badge, some of the pixels at the corners of the matrix and over the bridge of the
+nose are missing from the display. This function will return `True` if the pixel exists
+and `False` otherwise.
+
+### `dcfurs.nrows`
+This constant integer defines the number of rows in the LED matrix. This will have a
+value of 18.
+
+### `dcfurs.ncols`
+This constant integer defines the number of columns in the LED matrix. This is will
+have a value of 7.
 
 Animations Module
 -----------------
@@ -96,10 +130,21 @@ statement to `animations/__init__.py`
     from animations.example import example
 ```
 
+From a REPL console, you can now run your animation with a simple python loop.
+
+```
+    import animations
+
+    test = animations.example()
+    while True:
+        test.draw()
+        pyb.delay(test.interval)
+```
+
 ### `draw()`
-This function is called from `main.py` to update the LED matrix for one tick of the
+This function is called from `main.py` to update the LED matrix for one frame of the
 animation.
 
 ### `interval`
-The animation must provide this variable to devine the time between subseqeuent calls
+The animation must provide this variable to define the time between subseqeuent calls
 to `draw()`

@@ -54,8 +54,9 @@ evtime = 0
 
 ## Enable wakeup from an active-high edge on PA0
 def imucallback(line):
-    tilt = imu.read(0x3)
+    global evtime
     evtime = pyb.millis()
+    tilt = imu.read(0x3)
     if (tilt & 0x80) != 0:
         print("Shake detected!")
     if (tilt & 0x20) != 0:
@@ -66,11 +67,12 @@ vbus = Pin('USB_VBUS', Pin.IN)
 
 ## Check for low power states, or do nothing.
 def trysuspend():
+    global evtime
     ## Never suspend when USB VBus is present
     if vbus.value():
         return False
     ## Don't sleep unless a timeout has elapsed.
-    if (evtime + 60000) < pyb.millis():
+    if (evtime + 60000) > pyb.millis():
         return False
     ## Turn off the display and go to deep sleep, with PA0 wakeup enabled.
     dcfurs.clear()
