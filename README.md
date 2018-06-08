@@ -5,14 +5,14 @@ The DC26 DefCon Furs badge is running a micropython environment that allows
 you to script the badge to do awesome things.
 
 At your disposal, you'll find:
-* An STM32F401RET6 microcontroller running Micropython
+* An STM32F411RET6 microcontroller running Micropython
 * 32 Mbit SPI flash on SPI bus 3
-* 7x18 pixel LED matrix display
+* 18x7 pixel LED matrix display
 * Two pushbutton switches on the ears
 * Taiyo Yuden EYSGCNZ bluetooth radio connected to USART1
 * I2C bus 1 for sensors, including:
-    - MMA7660 accelerometer at address 0x4C
-    - TBD for capacative touch
+    - NXP MMA7660 accelerometer at address 0x4C
+    - Azoteq IQS231A capacative touch controller at address 0x44
     - #badgelife shitty addon connector
 
 Updating Firmware
@@ -88,6 +88,12 @@ The `value` parameter can provide a PWM intensity value. Integer values in the r
 zero to 256 control the intensity of the pixel, otherwise the truth value will either
 set the pixel to full intensity, or switch it off.
 
+### `dcfurs.set_frame(fbuf)`
+Sets the entire frame buffer in a single call. The `fbuf` parameter should be an array exactly
+`dcfurs.nrows` in length, each elemnent of which describes one row of the matrix. If the row
+is an integer, it is interpreted as a bitmap that would be passed to `dcfurs.set_row()`, or if
+the row is a `bytearray` then it will be interpreted as an array of PWM intensity values.
+
 ### `dcfurs.has_pixel(row, col)`
 Checks if the pixel at the given row and colum exists in the LED matrix. Due to the shape
 of the badge, some of the pixels at the corners of the matrix and over the bridge of the
@@ -96,18 +102,32 @@ and `False` otherwise.
 
 ### `dcfurs.nrows`
 This constant integer defines the number of rows in the LED matrix. This will have a
-value of 18.
+value of 7.
 
 ### `dcfurs.ncols`
 This constant integer defines the number of columns in the LED matrix. This is will
-have a value of 7.
+have a value of 18.
 
-Animations Module
+Badge Animations
+================
+Badge animations can be written as Python classes, or can be provided as JSON frame
+data. The resulting animations will be included as part of the `animations` module,
+with each class in this module providing a unique animation.
+
+Every class provided by this module will present the following interface.
+
+### `draw()`
+This function is called to render the next frame of the animation to the LED matrix.
+
+### `interval`
+The animation must provide this variable to define the time, in milliseconds, until the
+call should be made to the `draw()` function.
+
+Python Animations
 -----------------
-Badge animiations are written in python as a part of the `animations` module. Each class
-provided by this module is a unique animation. The interface to an animation must provide
-the `draw()` function and the `interval` variable. We can write a simple row-scanning
-example as follows:
+Badge animations written in python should be placed in the `animations/` directory, and
+must implement both the `draw()` method and set the `interval` variable. We can write a
+simple row-scanning example as follows:
 
 ```
     import dcfurs
@@ -120,7 +140,7 @@ example as follows:
         def draw(self):
             self.counter += 1
             dcfurs.clear()
-            dcfurs.set_row(self.counter % 7, 0x3ffff)
+            dcfurs.set_row(self.counter % dcfurs.nrows, 0x3ffff)
 ```
 
 To add your animation to the default set provided by the badge, you must add an `import`
@@ -141,10 +161,28 @@ From a REPL console, you can now run your animation with a simple python loop.
         pyb.delay(test.interval)
 ```
 
-### `draw()`
-This function is called from `main.py` to update the LED matrix for one frame of the
-animation.
+JSON Animations
+---------------
+For simple animations that don't require user interraction, the frames can also be
+provided in JSON format. These animations should be placed in the `animations/`
+directory and named with a `.js` file extension. During initialization the
+`animations` module will generate class definitions for each JSON file found.
 
-### `interval`
-The animation must provide this variable to define the time between subseqeuent calls
-to `draw()`
+The JSON file should contain an array, with each element of the array containing
+a JSON object that defines an `interval` encoded as an integer, and a `frame` encoded
+as a string. The string should be a hexadecimal representation of the PWM intensity
+for each pixel, with rows delimited by a colon `':'`. One nibble is given for each
+pixel, with a value of `0` turning the pixel off and `F` setting the pixel to full
+intensity.
+
+Thus a single frame which shows PWM intensity increasing from right to left and top to
+bottom can be encoded as:
+
+```
+    [
+        {
+            "interval": 1000,
+            "frame": "000000000000001234:000000000000123456:000000000012345678:00000000123456789a:000000123456789abc:0000123456789abcde:00123456789abcdeff"
+        }
+    ]
+```

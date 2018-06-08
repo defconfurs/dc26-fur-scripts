@@ -108,12 +108,6 @@ class fur:
     else:
       self.fbuf[xy[0]][xy[1]] = 255
 
-  def redrawDisplay(self):
-    for y in range(0,len(self.fbuf)):
-      row = self.fbuf[y]
-      for x in range(0, len(row)):
-        dcfurs.set_pixel(x, y, row[x])
-
   def draw(self):
     self.face()
-    self.redrawDisplay()
+    dcfurs.set_frame(self.fbuf)

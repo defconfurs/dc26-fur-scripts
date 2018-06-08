@@ -2,11 +2,11 @@
 import pyb
 import dcfurs
 import badge
+import micropython
 
 print("Booting...")
 
 def owo():
-    """Currently Unused"""
     dcfurs.clear()
     ## Draw the Oh's
     for x in range(1,6):
@@ -31,7 +31,6 @@ def owo():
     dcfurs.set_pixel(11,3,256)
 
 def boop():
-    """Currently Unused"""
     dcfurs.clear()
     # Gimmie a B!
     for x in range(0,7):
@@ -68,11 +67,6 @@ def boop():
     dcfurs.set_pixel(14,3,256)
     dcfurs.set_pixel(15,3,256)
 
-## Wait for a tap event.
-#owo()
-#boop()
-#pyb.delay(3000)
-
 ## Run the show.
 import animations
 selected = 0
@@ -89,29 +83,31 @@ while True:
         if badge.right.event():
             selected = (selected + 1) % len(available)
             anim = available[selected]()
+            timeout = 120000
         elif badge.left.event():
             if selected == 0:
                 selected = len(available)
             selected = selected - 1
             anim = available[selected]()
-
-#        ## Check for boops
-#        tilt = badge.imu.read(0x03)
-#        if (tilt & 0x20) != 0:
-#            boop()
-#            pyb.delay(1000)
-#            anim = available[selected]()
+            timeout = 120000
+        elif badge.boop.event():
+            #micropython.mem_info()
+            boop()
+            pyb.delay(1000)
 
         ## Run the animation timing
-        if ival > 10:
-            pyb.delay(10)
-            ival -= 10
-            timeout -= 10
+        if ival > 50:
+            pyb.delay(50)
+            ival -= 50
+            timeout -= 50
         else:
             pyb.delay(ival)
             timeout -= ival
             ival = 0
         
+        ## Attempt to suspend the badge between animations
+        badge.trysuspend()
+
     ## Rotate through animations every 60 seconds.
     if timeout < 0:
         owo()

@@ -12,26 +12,6 @@ class worm:
     self.fbuf = [bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18),bytearray(18)]
     self.counter = 0
 
-  def isBlacklisted(self, x, y):
-    if x < 0 or x > 17:  # Out of bounds
-      return 1
-    elif y < 0 or y > 6:  # out of bounds
-      return 1
-    elif x == 0 and y == 0: # rounded rectangle
-      return 1
-    elif x == 17 and y == 0: # rounded rectangle
-      return 1
-    elif x == 0 and y == 6: # rounded rectangle
-      return 1
-    elif x == 17 and y == 6: # rounded rectangle
-      return 1
-    elif x > 6 and x < 11 and y == 5: # nose top
-      return 1
-    elif x > 5 and x < 12 and y == 6: # nose bottom
-      return 1
-    else:
-      return 0
-
   def updatePosition(self):
     self.dimPixels()
     (tx, ty, tz) = badge.imu.filtered_xyz()
@@ -57,7 +37,7 @@ class worm:
         new_x = random.randint(-1, 1)
       else:
         new_y = random.randint(-1, 1)
-    if (not self.isBlacklisted(self.x + new_x, self.y + new_y)):
+    if (dcfurs.has_pixel(self.x + new_x, self.y + new_y)):
       self.x += new_x
       self.y += new_y
     else: # Always move.  This could lead to recursive crash if this method is programmed poorly :)
@@ -76,12 +56,6 @@ class worm:
   def setPixel(self, x, y, value):
     self.fbuf[y][x] = value 
   
-  def redrawDisplay(self):
-    for y in range(0,len(self.fbuf)):
-      row = self.fbuf[y]
-      for x in range(0, len(row)):
-        dcfurs.set_pixel(x, y, row[x])
-  
   def draw(self):
     self.updatePosition()
-    self.redrawDisplay()
+    dcfurs.set_frame(self.fbuf)
