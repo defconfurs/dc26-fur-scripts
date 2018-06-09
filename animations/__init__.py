@@ -9,6 +9,7 @@ from animations.cylon import cylon
 from animations.emotes import emotes
 from animations.life import life
 from animations.pong import pong
+from animations.maze import maze
 
 ## Dynamically import all the python files we can find.
 #import os

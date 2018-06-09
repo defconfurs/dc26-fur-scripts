@@ -164,9 +164,11 @@ imu.write(0x7, 0xc1)    # Set push-pull active-high interrupt, back to active mo
 
 ## For tracking orientation.
 xyz = [imu.x(), imu.y(), imu.y()]
+sensitivity = 5
 
 ## Keep track of activity timing.
 evtime = 0
+evtimeout = 900000
 
 ## Enable wakeup from an active-high edge on PA0
 def imucallback(line):
@@ -184,7 +186,6 @@ vbus = Pin('USB_VBUS', Pin.IN)
 ## Check for low power states, or do nothing.
 def trysuspend():
     global evtime
-    global xyz
 
     ## Detect motion via the accelerometer
     dx = imu.x() - xyz[0]
@@ -194,7 +195,7 @@ def trysuspend():
     xyz[0] += dx
     xyz[1] += dy
     xyz[2] += dz
-    if delta > 50:
+    if delta > (sensitivity * sensitivity):
         evtime = pyb.millis()
         return False
 
@@ -203,7 +204,7 @@ def trysuspend():
         evtime = pyb.millis()
         return False
     ## Don't sleep unless a timeout has elapsed.
-    if (evtime + 60000) > pyb.millis():
+    if (evtime + evtimeout) > pyb.millis():
         return False
     ## Turn off the display and go to deep sleep, with PA0 wakeup enabled.
     dcfurs.clear()
