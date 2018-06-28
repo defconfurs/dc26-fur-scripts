@@ -73,8 +73,6 @@ selected = 0
 available = animations.all()
 anim = available[selected]()
 
-timeout = 120000
-
 while True:
     anim.draw()
     ival = anim.interval
@@ -83,13 +81,11 @@ while True:
         if badge.right.event():
             selected = (selected + 1) % len(available)
             anim = available[selected]()
-            timeout = 120000
         elif badge.left.event():
             if selected == 0:
                 selected = len(available)
             selected = selected - 1
             anim = available[selected]()
-            timeout = 120000
         elif badge.boop.event():
             #micropython.mem_info()
             boop()
@@ -99,19 +95,9 @@ while True:
         if ival > 50:
             pyb.delay(50)
             ival -= 50
-            timeout -= 50
         else:
             pyb.delay(ival)
-            timeout -= ival
             ival = 0
         
         ## Attempt to suspend the badge between animations
         badge.trysuspend()
-
-    ## Rotate through animations every 60 seconds.
-    if timeout < 0:
-        owo()
-        pyb.delay(5000)
-        selected = (selected + 1) % len(available)
-        anim = available[selected]()
-        timeout = 120000
