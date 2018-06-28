@@ -1,7 +1,6 @@
 import dcfurs
 import badge
 import random
-import sys
 from micropython import const
 
 ## Enumerated types for each cell of the maze.
@@ -119,11 +118,12 @@ class maze:
 
     def draw(self):
         ## Automatically solve the maze
-        if self.autosolve and ((self.counter & 3) == 3):
-            ## Move once every 4 ticks.
-            dx,dy = dirxy(self.z[self.y][self.x], magnitude=1)
-            self.x += dx
-            self.y += dy
+        if self.autosolve:
+            if (self.counter & 3) == 3:
+                ## Move once every 4 ticks.
+                dx,dy = dirxy(self.z[self.y][self.x], magnitude=1)
+                self.x += dx
+                self.y += dy
         ## Let the user solve it with the accelerometer.
         elif ((self.counter & 1) == 0):
             ## Read and translate the accelerometer orientation
