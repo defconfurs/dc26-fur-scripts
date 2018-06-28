@@ -15,20 +15,6 @@ At your disposal, you'll find:
     - Azoteq IQS231A capacative touch controller at address 0x44
     - #badgelife shitty addon connector
 
-Updating Firmware
------------------
-The STM32F401 microcontroller features a DFU bootloader, which is capable of updating
-its firmware via USB. From a Linux or OSX machine, you will need the `firmware.dfu`
-image, as well as the `dfu-util` program. To apply a firwmare update, perform the
-following steps.
-
-1. Completely power down the badge by removing the batteries and USB power.
-2. Power the badge by USB while holding down the left button by the shitty addon header.
-3. Execute the command `dfu-util -a 0 -d 0483:df11 -D firmware.dfu`. Note that this
-    may require `sudo` depending on your operating system and USB permissions.
-4. Wait for the upgrade to complete, which may take up to 30 seconds.
-5. Unplug the badge from USB to restart and apply the firmware update.
-
 Badge Module
 ------------
 The `badge` module is implemented in `badge.py` and contains all the setup necessary
@@ -186,3 +172,43 @@ bottom can be encoded as:
         }
     ]
 ```
+
+
+Recovery and Programming Modes
+==============================
+If something has gone wrong with your badge, don't panic! There are many
+ways to recover the state of your firwmare.
+
+During power on, the two pushbuttons switches on the ears can be used to
+select the boot mode of the badge firmware. Switch `SW1` is located on the
+left ear, adjacent to the shitty addon header and puts the badge into DFU
+bootloader mode. Switch `SW2` is located on the right ear opposite the
+shitty addon header, and puts the badge into safe mode or performs factory
+recovery.
+
+Safe Mode and Recovery
+----------------------
+If switch `SW2` is pressed during power on, the LED on the back of the badge
+will begin to cycle through three colors: Green, Blue and Cyan to select
+the boot mode. To select a boot mode, wait until the desired color is active
+and then release `SW2`. The badge will flash your selected mode and then proceed
+to boot.
+
+* Green selects normal boot mode, which mounts the filesystem and executes `boot.py` and `main.py`
+* Blue selects safe mode, which mounts the filesystem but does not execute `boot.py` or `main.py`
+* Cyan performs a factory recovery, which formats the filesystem and restores the default contents.
+
+Updating Firmware
+-----------------
+The STM32F411 microcontroller features a DFU bootloader, which is capable of updating
+its firmware via USB. From a Linux or OSX machine, you will need the `firmware.dfu`
+image, as well as the `dfu-util` program. To apply a firwmare update, perform the
+following steps.
+
+1. Completely power down the badge by removing the batteries and USB power.
+2. Power on badge via USB while holding down switch `SW1`, located adjacent to the
+    shitty addon header.
+3. Execute the command `dfu-util -a 0 -d 0483:df11 -D firmware.dfu`. Note that this
+    may require `sudo` depending on your operating system and USB permissions.
+4. Wait for the upgrade to complete, which may take up to 30 seconds.
+5. Unplug the badge from USB to restart and apply the firmware update.
