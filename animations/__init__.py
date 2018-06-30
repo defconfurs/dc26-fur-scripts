@@ -71,7 +71,7 @@ class __jsonanim__:
 ## Dynamically generate animation classes from JSON files.
 files = os.listdir("/flash/animations")
 for filename in files:
-    if filename[:2] != "__" and filename[-3:] == ".json":
+    if filename[:2] != "__" and filename[-5:] == ".json":
         classname = filename[:-3]
         globals()[classname] = type(classname, (__jsonanim__,), {'path', "/flash/animations/" + filename})
 
