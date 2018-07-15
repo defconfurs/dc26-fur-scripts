@@ -112,10 +112,8 @@ class capsense:
 
     def __init__(self):
         self.prev = False
-        self.i2c = I2C(1, I2C.MASTER)
-        if self.i2c.is_ready(self.IQS231_ADDR):
-            self.i2c.mem_write(bytearray([self.CMD_ENABLE_SENSING | self.CMD_ATI_CH0]), self.IQS231_ADDR, self.REG_COMMANDS)
-        else:
+        self.i2c = I2C(1, I2C.MASTER, baudrate=400000)
+        if not self.i2c.is_ready(self.IQS231_ADDR):
             self.i2c = None
     
     def write(self, addr, val):
@@ -138,7 +136,19 @@ class capsense:
     def event(self):
         if not self.i2c:
             return False
-        buf = self.i2c.mem_read(5, self.IQS231_ADDR, self.REG_CH0_ACF)
+	try:
+            buf = self.i2c.mem_read(5, self.IQS231_ADDR, self.REG_CH0_ACF)
+        except OSError as exc:
+            ## In the event of I2C noise, the capsense controller may reset, in
+            ## which case we require silence on the bus for at least t_test_mode
+            ## to successfully reboot.
+            if not self.i2c.is_ready(self.IQS231_ADDR):
+                exti.disable()
+                pyb.delay(500)
+                exti.enable()
+                exti.swint()
+            #print("Capsense failed: " + uerrno.errorcode[exc.args[0]])
+            return False
         acf = (buf[1] << 8) + buf[2]
         lta = (buf[3] << 8) + buf[4]
         if self.prev:
