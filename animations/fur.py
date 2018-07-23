@@ -49,13 +49,13 @@ class fur:
     self.reset_fbuf()
     move_y = 0
     move_x = 0
-    if tz < -16:
+    if tz < -24:
       move_y = -1
-    elif tz > 16:
+    elif tz > 24:
       move_y = 1
-    if ty < -16:
+    if ty < -24:
       move_x = 1
-    elif ty > 16:
+    elif ty > 24:
       move_x = -1
     if (badge.imu.read(0x3) & 0x80) != 0: # Shake event
       faceBuf = self.blinkFace

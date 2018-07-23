@@ -48,8 +48,10 @@ class worm:
     for y in range(0,len(self.fbuf)):
       row = self.fbuf[y]
       for x in range(0, len(row)):
-        if self.fbuf[y][x] > 8:
-          self.fbuf[y][x] -= 8 
+        if self.fbuf[y][x] > 16:
+          self.fbuf[y][x] -= 8
+          if self.fbuf[y][x] > 128:
+            self.fbuf[y][x] -= 8
         else:
           self.fbuf[y][x] = 0
  

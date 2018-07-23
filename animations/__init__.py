@@ -10,6 +10,7 @@ from animations.emotes import emotes
 from animations.life import life
 from animations.pong import pong
 from animations.maze import maze
+from animations.dgol import dgol
 
 ## Dynamically import all the python files we can find.
 #import os
