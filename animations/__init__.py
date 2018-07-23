@@ -49,24 +49,25 @@ import ujson
 import os
 class __jsonanim__:
     def __init__(self):
-        self.data = []
-        self.framenum = 0
-
         fh = open(self.path, "r")
-        for fdata in ujson.load(fh):
-            fbuf = str2frame(fdata['frame'])
-            self.data.append({'interval': fdata['interval'], 'frame': fbuf})
+        self.framenum = 0
+        self.js = ujson.load(fh)
         fh.close()
-        
         self.draw()
 
     def drawframe(self, frame):
         self.interval = int(frame['interval'])
-        dcfurs.set_frame(frame['frame'])
+        y = 0
+        for row in frame['frame'].split(':'):
+            buf = bytearray(len(row))
+            for x in range(len(row)):
+               buf[x] = int(row[x], 16) << 4
+            dcfurs.set_row(y, buf)
+            y = y+1
 
     def draw(self):
-        self.drawframe(self.data[self.framenum])
-        self.framenum = (self.framenum + 1) % len(self.data)
+        self.drawframe(self.js[self.framenum])
+        self.framenum = (self.framenum + 1) % len(self.js)
 
 ## Dynamically generate animation classes from JSON files.
 files = os.listdir("/flash/animations")
