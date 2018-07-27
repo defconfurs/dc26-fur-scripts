@@ -53,18 +53,21 @@ class __jsonanim__:
         fh = open(self.path, "r")
         self.framenum = 0
         self.js = ujson.load(fh)
+        self.intensity = bytearray([0, 2, 3, 4, 6, 9, 12, 17, 24, 34, 47, 66, 92, 130, 182, 255])
         fh.close()
         self.draw()
 
     def drawframe(self, frame):
         self.interval = int(frame['interval'])
+        x = 0
         y = 0
-        for row in frame['frame'].split(':'):
-            buf = bytearray(len(row))
-            for x in range(len(row)):
-               buf[x] = int(row[x], 16) << 4
-            dcfurs.set_row(y, buf)
-            y = y+1
+        for ch in frame['frame']:
+            if ch == ':':
+                x = 0
+                y = y+1
+            else:
+                dcfurs.set_pixel(x,y,self.intensity[int(ch, 16)])
+                x = x+1
 
     def draw(self):
         self.drawframe(self.js[self.framenum])
