@@ -6,7 +6,6 @@ from animations.dos import dos
 from animations.worm import worm
 from animations.rain import rain
 from animations.cylon import cylon
-from animations.emotes import emotes
 from animations.life import life
 from animations.pong import pong
 from animations.maze import maze
