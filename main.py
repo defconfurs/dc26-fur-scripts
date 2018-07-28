@@ -2,7 +2,7 @@
 import pyb
 import dcfurs
 import badge
-import emotes
+import emote
 import micropython
 import ubinascii
 
@@ -44,22 +44,34 @@ while True:
     anim.draw()
     ival = anim.interval
     while ival > 0:
-        ## Change animation on button press
+        ## Change animation on button press, or emote if both pressed.
         if badge.right.event():
-            selected = (selected + 1) % len(available)
-            anim = available[selected]()
+            if badge.left.value():
+                emote.random()
+            else: 
+                selected = (selected + 1) % len(available)
+                anim = available[selected]()
         elif badge.left.event():
-            if selected == 0:
-                selected = len(available)
-            selected = selected - 1
-            anim = available[selected]()
+            if badge.right.value():
+                emote.random()
+            elif selected == 0:
+                selected = len(available)-1
+                anim = available[selected]()
+            else:
+                selected = selected - 1
+                anim = available[selected]()
+        # Service events.
         elif badge.ble.any():
             ble()
         elif badge.boop.event():
             #micropython.mem_info()
-            emotes.boop()
-            pyb.delay(1000)
+            emote.boop()
+            ival = 1000
 
+        ## Pause for as long as long as both buttons are pressed.
+        if badge.right.value() and badge.left.value():
+            ival += 50
+        
         ## Run the animation timing
         if ival > 50:
             pyb.delay(50)
