@@ -28,6 +28,10 @@ perform wakeup and tap detection on the badge. The accelerometer is also availab
 for orientation detection. Please refer to the micropython documentation for the API
 to the `pyb.Accel` class.
 
+### `badge.ble`
+This contains an instance of the `pyb.UART` class, and is configured to communicate
+to the Taiyo Yuden EYSGCNZWY bluetooth module.
+
 ### `badge.trysuspend()`
 Check if the badge is in a state that can be put to standby mode, when in this state
 the LED matrix and CPU will be disabled, and the accelerometer will be configured as
@@ -41,25 +45,25 @@ DCFurs Module
 -------------
 The `dcfurs` module is impleneted within the Micropython firmware, and and includes
 the DMA and interrupt handlers necessary to drive the LED matrix. By writing this
-module in C, we can acheive a sufficiently fast scan rate to perform up to 16-steps
+module in C, we can acheive a sufficiently fast scan rate to perform up to 64-steps
 of per-pixel dimming control.
 
 Pixels in the matrix are addressed by their row/column coordinates, starting from
 row zero and column zero in the upper left corner of the matrix.
 
-### `dcfurs.matrix_init()`
+### `dcfurs.init(timer)`
 Initialize the LED matrix and DMA interrupt handlers, this must be called first before
-any other features in the DCFurs module can be used.
-TODO: Can we make this automagical on import?
-
-### `dcfurs.matrix_loop()`
-Perform one iteration of the PWM main loop for driving the LED matrix. This function is
-written to be callable as an interrupt handler, and would typically be driven from a
-high priority timer.
+any other features in the DCFurs module can be used. The `timer` parameter provides a
+handle to the STM32 Advanced-function timer `TIM1`, configured at the desired PWM
+frequency. This timer will be used to provide interrupts and DMA transfers in order
+to refresh the delay.
 
 ```
+    import dcfurs
     from pyb import Timer
-    mtimer = pyb.Timer(5, freq=25000, callback=dcfurs.matrix_loop)
+
+    pwmclk = pyb.Timer(1, freq=125000)
+    dcfurs.init(pwmclk)
 ```
 
 ### `dcfurs.clear()`
@@ -100,7 +104,7 @@ Badge animations can be written as Python classes, or can be provided as JSON fr
 data. The resulting animations will be included as part of the `animations` module,
 with each class in this module providing a unique animation.
 
-Every class provided by this module will present the following interface.
+Every class provided by this module must present the following interface.
 
 ### `draw()`
 This function is called to render the next frame of the animation to the LED matrix.
