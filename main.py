@@ -2,70 +2,37 @@
 import pyb
 import dcfurs
 import badge
+import emotes
 import micropython
+import ubinascii
 
 print("Booting...")
 
-def owo():
-    dcfurs.clear()
-    ## Draw the Oh's
-    for x in range(1,6):
-        dcfurs.set_pixel(0,x,256)
-        dcfurs.set_pixel(4,x,256)
-        dcfurs.set_pixel(13,x,256)
-        dcfurs.set_pixel(17,x,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(x,0,256)
-        dcfurs.set_pixel(x,6,256)
-    for x in range(14,17):
-        dcfurs.set_pixel(x,0,256)
-        dcfurs.set_pixel(x,6,256)
-    ## What's this?
-    dcfurs.set_pixel(6,2,256)
-    dcfurs.set_pixel(6,3,256)
-    dcfurs.set_pixel(7,4,256)
-    dcfurs.set_pixel(8,3,256)
-    dcfurs.set_pixel(9,3,256)
-    dcfurs.set_pixel(10,4,256)
-    dcfurs.set_pixel(11,2,256)
-    dcfurs.set_pixel(11,3,256)
+## Handle events from the BLE module.
+def blerx(args):
+    for x in args:
+        name, value = x.split('=')
+        if name == 'emote':
+            ## Select a random emote.
+            if (not value) or (value == 'random'):
+                emotes.owo()
+                pyb.delay(2500)
+            ## Parse a specific emote to draw. 
+            else:
+                emstr = ubinascii.unhexlify(value).decode("ascii")
+                emotes.render(emstr)
+                pyb.delay(2500)
 
-def boop():
-    dcfurs.clear()
-    # Gimmie a B!
-    for x in range(0,7):
-        dcfurs.set_pixel(1, x, 256)
-    dcfurs.set_pixel(2,0,256)
-    dcfurs.set_pixel(3,0,256)
-    dcfurs.set_pixel(4,1,256)
-    dcfurs.set_pixel(4,2,256)
-    dcfurs.set_pixel(2,3,256)
-    dcfurs.set_pixel(3,3,256)
-    dcfurs.set_pixel(4,4,256)
-    dcfurs.set_pixel(4,5,256)
-    dcfurs.set_pixel(2,6,256)
-    dcfurs.set_pixel(3,6,256)
-    # And an Oh!
-    dcfurs.set_pixel(7,0,256)
-    dcfurs.set_pixel(7,4,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(6,x,256)
-        dcfurs.set_pixel(8,x,256)
-    # And an another Oh!
-    dcfurs.set_pixel(10,0,256)
-    dcfurs.set_pixel(10,4,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(9,x,256)
-        dcfurs.set_pixel(11,x,256)
-    # Gimmie a P!
-    for x in range(0,7):
-        dcfurs.set_pixel(13, x, 256)
-    dcfurs.set_pixel(14,0,256)
-    dcfurs.set_pixel(15,0,256)
-    dcfurs.set_pixel(16,1,256)
-    dcfurs.set_pixel(16,2,256)
-    dcfurs.set_pixel(14,3,256)
-    dcfurs.set_pixel(15,3,256)
+def ble():
+    line = badge.ble.readline().decode("ascii")
+    #print(line)
+    try:
+        event, x = line.split(':', 1)
+        args = x.rstrip().split()
+        if (event == 'rx'):
+            blerx(args)
+    except:
+        return
 
 ## Run the show.
 import animations
@@ -86,9 +53,11 @@ while True:
                 selected = len(available)
             selected = selected - 1
             anim = available[selected]()
+        elif badge.ble.any():
+            ble()
         elif badge.boop.event():
             #micropython.mem_info()
-            boop()
+            emotes.boop()
             pyb.delay(1000)
 
         ## Run the animation timing

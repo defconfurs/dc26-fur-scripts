@@ -6,6 +6,7 @@ from pyb import Timer
 from pyb import Accel
 from pyb import ExtInt
 from pyb import I2C
+from pyb import UART
 
 ##-----------------------------------------------
 ## LED Matrix Drivers
@@ -14,9 +15,9 @@ import micropython
 micropython.alloc_emergency_exception_buf(100)
 
 ## Bring up the LED matrix
-dcfurs.matrix_init()
+pwmclk = Timer(1, freq=125000)
+dcfurs.init(pwmclk)
 dcfurs.clear()
-mtimer = pyb.Timer(5, freq=25000, callback=dcfurs.matrix_loop)
 
 ##-----------------------------------------------
 ## Pushbutton Class
@@ -161,6 +162,13 @@ class capsense:
 boop = capsense()
 
 ##-----------------------------------------------
+## Bluetooth Module
+##-----------------------------------------------
+ble_enable = Pin('BLE_EN', Pin.OUT_OD)
+ble_enable.value(1)
+ble = UART(1, 115200)
+
+##-----------------------------------------------
 ## Accelerometer and Sleep Control
 ##-----------------------------------------------
 ## Bring up and configure the Accelerometer
@@ -217,6 +225,7 @@ def trysuspend():
     if (evtime + evtimeout) > pyb.millis():
         return False
     ## Turn off the display and go to deep sleep, with PA0 wakeup enabled.
+    ble_enable.value(0)
     dcfurs.clear()
     pyb.standby(True)   # NOTE: pyb.standby API modified to enable PA0 wakeup.
     ## Will never get here...
