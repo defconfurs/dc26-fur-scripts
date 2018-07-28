@@ -15,12 +15,12 @@ def blerx(args):
         if name == 'emote':
             ## Select a random emote.
             if (not value) or (value == 'random'):
-                emotes.owo()
+                emote.random()
                 pyb.delay(2500)
             ## Parse a specific emote to draw. 
             else:
                 emstr = ubinascii.unhexlify(value).decode("ascii")
-                emotes.render(emstr)
+                emote.render(emstr)
                 pyb.delay(2500)
 
 def ble():
