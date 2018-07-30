@@ -4,6 +4,7 @@ import dcfurs
 import badge
 import emote
 import micropython
+import settings
 import ubinascii
 
 print("Booting...")
@@ -25,7 +26,8 @@ def blerx(args):
 
 def ble():
     line = badge.ble.readline().decode("ascii")
-    #print(line)
+    if settings.debug:
+        print(line)
     try:
         event, x = line.split(':', 1)
         args = x.rstrip().split()
