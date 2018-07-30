@@ -1,5 +1,6 @@
 """Scrolling Text"""
 import dcfurs
+import settings
 
 ## Font Data
 font5var = {'A':bytearray([0x1E,0x05,0x05,0x1E,0x00]),
@@ -63,8 +64,8 @@ font5var = {'A':bytearray([0x1E,0x05,0x05,0x1E,0x00]),
             '?':bytearray([0x01,0x15,0x02,0x00])}
 
 class scroll:
-    def __init__(self, text="DEFCON Furs"):
-        self.text = text
+    def __init__(self):
+        self.text = settings.banner
         self.interval = 250
         self.scrollbuf = bytearray([0x00, 0x00, 0x00, 0x00])
         self.shift = 0

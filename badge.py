@@ -1,6 +1,7 @@
 ## Here's all the stuff to make your badge's hardware operate normally.
 import pyb
 import dcfurs
+import settings
 from pyb import Pin
 from pyb import Timer
 from pyb import Accel
@@ -137,7 +138,7 @@ class capsense:
     def event(self):
         if not self.i2c:
             return False
-	try:
+        try:
             buf = self.i2c.mem_read(5, self.IQS231_ADDR, self.REG_CH0_ACF)
         except OSError as exc:
             ## In the event of I2C noise, the capsense controller may reset, in
@@ -148,7 +149,8 @@ class capsense:
                 pyb.delay(500)
                 exti.enable()
                 exti.swint()
-            #print("Capsense failed: " + uerrno.errorcode[exc.args[0]])
+            if settings.debug:
+                print("Capsense failed: " + uerrno.errorcode[exc.args[0]])
             return False
         acf = (buf[1] << 8) + buf[2]
         lta = (buf[3] << 8) + buf[4]
@@ -186,24 +188,31 @@ sensitivity = 5
 
 ## Keep track of activity timing.
 evtime = 0
-evtimeout = 900000
 
 ## Enable wakeup from an active-high edge on PA0
 def imucallback(line):
     global evtime
     evtime = pyb.millis()
-    tilt = imu.read(0x3)
+    return imu.read(0x3)
+    
+def imudebug(line):
+    tilt = imucallback(line)
     if (tilt & 0x80) != 0:
         print("Shake detected!")
     if (tilt & 0x20) != 0:
         print("Tap detected!")
 
-exti = ExtInt('MMA_INT', Pin.IRQ_RISING, Pin.PULL_NONE, imucallback)
+exti = ExtInt('MMA_INT', Pin.IRQ_RISING, Pin.PULL_NONE, imucallback if not settings.debug else imudebug)
 vbus = Pin('USB_VBUS', Pin.IN)
 
 ## Check for low power states, or do nothing.
 def trysuspend():
     global evtime
+
+    ## Do nothing if sleep is disabled
+    timeout = settings.sleeptimeout
+    if not timeout:
+        return False
 
     ## Detect motion via the accelerometer
     dx = imu.x() - xyz[0]
@@ -222,7 +231,7 @@ def trysuspend():
         evtime = pyb.millis()
         return False
     ## Don't sleep unless a timeout has elapsed.
-    if (evtime + evtimeout) > pyb.millis():
+    if (evtime + timeout) > pyb.millis():
         return False
     ## Turn off the display and go to deep sleep, with PA0 wakeup enabled.
     ble_enable.value(0)

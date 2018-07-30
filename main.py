@@ -64,7 +64,8 @@ while True:
         elif badge.ble.any():
             ble()
         elif badge.boop.event():
-            #micropython.mem_info()
+            if settings.debug:
+                micropython.mem_info()
             emote.boop()
             ival = 1000
 
