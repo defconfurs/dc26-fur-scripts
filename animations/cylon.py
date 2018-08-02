@@ -10,9 +10,9 @@ class cylon:
     def draw(self):
         dcfurs.clear()
         for row in range(0, 7):
-            dcfurs.set_pixel(self.column-1, row, 10)
+            dcfurs.set_pixel(self.column-1, row, 1)
             dcfurs.set_pixel(self.column, row, 200)
-            dcfurs.set_pixel(self.column+1, row, 10)
+            dcfurs.set_pixel(self.column+1, row, 1)
         if self.leftright:
            self.column += 1
            if self.column >= 17:

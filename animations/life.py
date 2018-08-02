@@ -54,7 +54,7 @@ class life:
                         row[x] = 255
                     else:
                         delta += 1
-                        row[x] = 1
+                        row[x] = 8
                 else:
                     if count == 3 or count == 6:
                         delta += 1
