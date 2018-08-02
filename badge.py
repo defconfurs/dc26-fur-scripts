@@ -21,6 +21,13 @@ dcfurs.init(pwmclk)
 dcfurs.clear()
 
 ##-----------------------------------------------
+## Bluetooth Module
+##-----------------------------------------------
+ble_enable = Pin('BLE_EN', Pin.OUT_OD)
+ble_enable.value(1)
+ble = UART(1, 115200)
+
+##-----------------------------------------------
 ## Pushbutton Class
 ##-----------------------------------------------
 class switch(Pin):
@@ -162,13 +169,6 @@ class capsense:
             return self.prev
 
 boop = capsense()
-
-##-----------------------------------------------
-## Bluetooth Module
-##-----------------------------------------------
-ble_enable = Pin('BLE_EN', Pin.OUT_OD)
-ble_enable.value(1)
-ble = UART(1, 115200)
 
 ##-----------------------------------------------
 ## Accelerometer and Sleep Control

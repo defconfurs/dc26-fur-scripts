@@ -8,6 +8,7 @@ import settings
 import ubinascii
 
 print("Booting...")
+import animations
 
 ## Handle events from the BLE module.
 def blerx(args):
@@ -36,12 +37,21 @@ def ble():
     except:
         return
 
-## Run the show.
-import animations
-selected = 0
-available = animations.all()
-anim = available[selected]()
+## Program the serial number into the BLE module, which ought
+## to have finished booting by now.
+if badge.ble:
+    badge.ble.write("set: serial=0x%04x\r\n" % dcfurs.serial())
 
+## Select the user's preferred boot animation.
+available = animations.all()
+selected = 0
+if settings.bootanim:
+    try:
+        selected = available.index(getattr(animations, settings.bootanim))
+    except Exception:
+        pass
+
+anim = available[selected]()
 while True:
     anim.draw()
     ival = anim.interval

@@ -13,3 +13,5 @@ banner = "DEFCON Furs"
 # Enable extra verbose debug messages.
 debug = False
 
+# The animation to play at boot.
+bootanim = "scroll"
