@@ -34,7 +34,7 @@ class __jsonanim__:
 files = os.listdir("/flash/animations")
 for filename in files:
     if filename[:2] != "__" and filename[-5:] == ".json":
-        classname = filename[:-3]
+        classname = filename[:-5]
         globals()[classname] = type(classname, (__jsonanim__,), {'path', "/flash/animations/" + filename})
 
 ## Dynamically import all the python files we can find.
