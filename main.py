@@ -13,7 +13,12 @@ import animations
 ## Handle events from the BLE module.
 def blerx(args):
     for x in args:
-        name, value = x.split('=')
+        ## Locate an optional value given by an '='
+        nv = x.split('=', 1)
+        name = nv[0]
+        value = nv[1] if len(nv) > 1 else None
+        
+        ## Handle the received stuff.
         if name == 'emote':
             ## Select a random emote.
             if (not value) or (value == 'random'):
@@ -24,6 +29,14 @@ def blerx(args):
                 emstr = ubinascii.unhexlify(value).decode("ascii")
                 emote.render(emstr)
                 pyb.delay(2500)
+        if name == 'awoo':
+            ## Someone started a howl
+            msg = animations.scroll(" AWOOOOOOOOOOOOOO")
+            delay = 0
+            while delay < 5000:
+                msg.draw()
+                pyb.delay(msg.interval)
+                delay += msg.interval
 
 def ble():
     line = badge.ble.readline().decode("ascii")
@@ -60,7 +73,7 @@ while True:
         if badge.right.event():
             if badge.left.value():
                 emote.random()
-            else: 
+            else:
                 selected = (selected + 1) % len(available)
                 anim = available[selected]()
         elif badge.left.event():
