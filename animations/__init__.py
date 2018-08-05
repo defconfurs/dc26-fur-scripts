@@ -1,3 +1,14 @@
+## Load the python animations
+from animations.scroll import scroll
+from animations.fur import fur
+from animations.worm import worm
+from animations.rain import rain
+from animations.cylon import cylon
+from animations.life import life
+from animations.pong import pong
+from animations.maze import maze
+from animations.dgol import dgol
+
 ## Dynamically import all the python files we can find.
 import os
 import sys
@@ -37,13 +48,6 @@ for filename in files:
         classname = filename[:-5]
         globals()[classname] = type(classname, (__jsonanim__,), {'path', "/flash/animations/" + filename})
 
-## Dynamically import all the python files we can find.
-files = os.listdir("/flash/animations")
-for filename in files:
-    if filename[:2] != "__" and filename[-3:] == ".py":
-        classname = filename[:-3]
-        x = __import__("animations." + classname, globals(), locals(), [classname], 0)
-        globals()[classname] = getattr(x, classname)
 
 ## Return a list of all animation classes
 def all():
