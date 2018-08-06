@@ -47,13 +47,14 @@ def ble():
         args = x.rstrip().split()
         if (event == 'rx'):
             blerx(args)
-    except:
+    except Exception:
         return
 
 ## Program the serial number into the BLE module, which ought
 ## to have finished booting by now.
 if badge.ble:
     badge.ble.write("set: serial=0x%04x\r\n" % dcfurs.serial())
+    badge.ble.write("set: cooldown=%d\r\n", % settings.blecooldown)
 
 ## Select the user's preferred boot animation.
 available = animations.all()

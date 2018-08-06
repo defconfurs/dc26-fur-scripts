@@ -19,3 +19,8 @@ bootanim = "scroll"
 # Whether the maze animation should autosolve.
 mazesolver = True
 
+# The base cooldown timing (in milliseconds) for BLE messages,
+# which is applied to special beacons received with a high RSSI.
+# Beacons with weaker signals are subject to a cooldown which
+# will be a multiple of this time.
+blecooldown = 60000

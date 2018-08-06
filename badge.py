@@ -24,6 +24,8 @@ dcfurs.clear()
 ## Bluetooth Module
 ##-----------------------------------------------
 ble_enable = Pin('BLE_EN', Pin.OUT_OD)
+ble_enable.value(0)
+pyb.delay(5)
 ble_enable.value(1)
 ble = UART(1, 115200)
 
