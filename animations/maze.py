@@ -1,6 +1,8 @@
 import dcfurs
 import badge
 import random
+import settings
+import emote
 from micropython import const
 
 ## Enumerated types for each cell of the maze.
@@ -24,13 +26,14 @@ def dirxy(direction, magnitude=1):
     return (0,0)
 
 class maze:
-    def __init__(self, width=51, height=51, autosolve=True):
+    def __init__(self, width=51, height=51):
         self.blink = True
         self.interval = 200
         self.width = (width | 1)
         self.height = (height | 1)
-        self.autosolve = autosolve
+        self.autosolve = settings.mazesolver
         self.counter = 0
+        self.wincount = 5000 / self.interval
         
         # Build actual maze
         self.z = []
@@ -49,7 +52,7 @@ class maze:
         self.x = random.randint(0, self.width-2) | 1
         self.y = random.randint(0, self.height-2) | 1
         self.z[self.y][self.x] = MAZE_FINISH
-        print("Start: %d,%d" % (self.x,self.y))
+        #print("Start: %d,%d" % (self.x,self.y))
 
         # generate the map working backward from the ending point
         start = (self.x,self.y)
@@ -117,8 +120,15 @@ class maze:
                     dcfurs.set_pixel(x, y, 0)
 
     def draw(self):
+        ## Check for a win condition
+        if (self.z[self.y][self.x] == MAZE_FINISH):
+            if not self.wincount:
+                emote.render("^.^")
+                return
+            else:
+                self.wincount -= 1
         ## Automatically solve the maze
-        if self.autosolve:
+        elif self.autosolve:
             if (self.counter & 3) == 3:
                 ## Move once every 4 ticks.
                 dx,dy = dirxy(self.z[self.y][self.x], magnitude=1)
@@ -154,7 +164,7 @@ class maze:
                         self.y += dy
                     elif (self.z[self.y][self.x + dx] != MAZE_WALL):
                         self.x += dx
-
+        
         ## Redraw
         self.counter += 1
         self.blink = not self.blink

@@ -77,68 +77,55 @@ font7bit = {
 }
 
 def owo():
-    dcfurs.clear()
-    ## Draw the Oh's
-    for x in range(1,6):
-        dcfurs.set_pixel(0,x,256)
-        dcfurs.set_pixel(4,x,256)
-        dcfurs.set_pixel(13,x,256)
-        dcfurs.set_pixel(17,x,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(x,0,256)
-        dcfurs.set_pixel(x,6,256)
-    for x in range(14,17):
-        dcfurs.set_pixel(x,0,256)
-        dcfurs.set_pixel(x,6,256)
-    ## What's this?
-    dcfurs.set_pixel(6,2,256)
-    dcfurs.set_pixel(6,3,256)
-    dcfurs.set_pixel(7,4,256)
-    dcfurs.set_pixel(8,3,256)
-    dcfurs.set_pixel(9,3,256)
-    dcfurs.set_pixel(10,4,256)
-    dcfurs.set_pixel(11,2,256)
-    dcfurs.set_pixel(11,3,256)
+    dcfurs.set_row(0, 0x1c00e)
+    dcfurs.set_row(1, 0x22011)
+    dcfurs.set_row(2, 0x22851)
+    dcfurs.set_row(3, 0x22b51)
+    dcfurs.set_row(4, 0x22491)
+    dcfurs.set_row(5, 0x22011)
+    dcfurs.set_row(6, 0x1c00e)
 
 def boop():
-    dcfurs.clear()
-    # Gimmie a B!
-    for x in range(0,7):
-        dcfurs.set_pixel(1, x, 256)
-    dcfurs.set_pixel(2,0,256)
-    dcfurs.set_pixel(3,0,256)
-    dcfurs.set_pixel(4,1,256)
-    dcfurs.set_pixel(4,2,256)
-    dcfurs.set_pixel(2,3,256)
-    dcfurs.set_pixel(3,3,256)
-    dcfurs.set_pixel(4,4,256)
-    dcfurs.set_pixel(4,5,256)
-    dcfurs.set_pixel(2,6,256)
-    dcfurs.set_pixel(3,6,256)
-    # And an Oh!
-    dcfurs.set_pixel(7,0,256)
-    dcfurs.set_pixel(7,4,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(6,x,256)
-        dcfurs.set_pixel(8,x,256)
-    # And an another Oh!
-    dcfurs.set_pixel(10,0,256)
-    dcfurs.set_pixel(10,4,256)
-    for x in range(1,4):
-        dcfurs.set_pixel(9,x,256)
-        dcfurs.set_pixel(11,x,256)
-    # Gimmie a P!
-    for x in range(0,7):
-        dcfurs.set_pixel(13, x, 256)
-    dcfurs.set_pixel(14,0,256)
-    dcfurs.set_pixel(15,0,256)
-    dcfurs.set_pixel(16,1,256)
-    dcfurs.set_pixel(16,2,256)
-    dcfurs.set_pixel(14,3,256)
-    dcfurs.set_pixel(15,3,256)
+    dcfurs.set_row(0, 0x0e48e)
+    dcfurs.set_row(1, 0x12b52)
+    dcfurs.set_row(2, 0x12b52)
+    dcfurs.set_row(3, 0x0eb4e)
+    dcfurs.set_row(4, 0x02492)
+    dcfurs.set_row(5, 0x02012)
+    dcfurs.set_row(6, 0x0200e)
+
+def beep():
+    dcfurs.set_row(0, 0x0e00e)
+    dcfurs.set_row(1, 0x12492)
+    dcfurs.set_row(2, 0x12b52)
+    dcfurs.set_row(3, 0x0e6ce)
+    dcfurs.set_row(4, 0x02d92)
+    dcfurs.set_row(5, 0x02012)
+    dcfurs.set_row(6, 0x0200e)
+
+def awoo():
+    dcfurs.set_row(0, 0x00006)
+    dcfurs.set_row(1, 0x11229)
+    dcfurs.set_row(2, 0x2aa29)
+    dcfurs.set_row(3, 0x2aaa9)
+    dcfurs.set_row(4, 0x11149)
+    dcfurs.set_row(5, 0x00009)
+    dcfurs.set_row(6, 0x00006)
 
 ## Render an emote from an ascii string
 def render(str):
+    ## Check for special cases
+    if str == 'boop':
+        boop()
+        return
+    if str == 'owo':
+        owo()
+        return
+    if str == 'awoo':
+        awoo()
+        return
+
+    ## Otherwise, generate from our character set.
     lbits = font7bit[str[0]]
     rbits = font7bit[str[-1]]
     dcfurs.clear()

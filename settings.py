@@ -15,3 +15,7 @@ debug = False
 
 # The animation to play at boot.
 bootanim = "scroll"
+
+# Whether the maze animation should autosolve.
+mazesolver = True
+
