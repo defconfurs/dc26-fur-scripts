@@ -4,16 +4,19 @@ DCFurs Badge Scripts
 The DC26 DefCon Furs badge is running a micropython environment that allows
 you to script the badge to do awesome things.
 
-At your disposal, you'll find:
+At your disposal, you will find:
 * An STM32F411RET6 microcontroller running Micropython
 * 32 Mbit SPI flash on SPI bus 3
 * 18x7 pixel LED matrix display
-* Two pushbutton switches on the ears
+* Two pushbutton switches located on the ears
 * Taiyo Yuden EYSGCNZ bluetooth radio connected to USART1
 * I2C bus 1 for sensors, including:
     - NXP MMA7660 accelerometer at address 0x4C
     - Azoteq IQS231A capacative touch controller at address 0x44
     - #badgelife shitty addon connector
+
+The source code, board schematics and further documenation can be found on GitHub at
+https://github.com/oskirby/dc26-fur-scripts
 
 Badge Module
 ------------
@@ -32,6 +35,11 @@ to the `pyb.Accel` class.
 This contains an instance of the `pyb.UART` class, and is configured to communicate
 to the Taiyo Yuden EYSGCNZWY bluetooth module.
 
+### `badge.boop`
+This contains a class dedicated to driving the IQS231A capacative sense controller,
+it provides an `event()` method that returns `True` when a capacative touch has been
+detected.
+
 ### `badge.trysuspend()`
 Check if the badge is in a state that can be put to standby mode, when in this state
 the LED matrix and CPU will be disabled, and the accelerometer will be configured as
@@ -39,7 +47,14 @@ a wakeup source. Upon waking up from standby mode the CPU will perform a hard re
 
 The badge will enter standby if all of the following conditions are met:
 * No voltage is detected on the VBUS pin (ie: USB disconnected)
-* No motion has been detected by the accelerometer within the last 10 minutes
+* No motion has been detected by the accelerometer in the last `settings.sleeptimeout`
+    milliseconds
+
+Settings Module
+---------------
+The `settings` module is implemented in `settings.py` and contains a collection of
+tunable parameters on how you want your badge to operate, such as the default
+animation to play on bootup and how long of a timeout to use before going to sleep.
 
 DCFurs Module
 -------------
@@ -69,8 +84,10 @@ to refresh the delay.
 ### `dcfurs.clear()`
 Clear the LED matrix, setting all pixels to an off state.
 
-### `dcfurs.set_row(row, bitmap)`
-Set the pixels for an entire row using a bitmap of pixel on/off values.
+### `dcfurs.set_row(row, pixels)`
+Set the pixels for an entire row using a bitmap of pixel on/off values. The `pixels` 
+parameter can contain an integer, which will act as a bitmask of the pixels for this
+row, or an `bytearray` of PWM intensities.
 
 ### `dcfurs.set_pixel(row, col, value=True)`
 Sets the intensity of a single pixel using its row and column coordinates in the matrix.
@@ -83,6 +100,16 @@ Sets the entire frame buffer in a single call. The `fbuf` parameter should be an
 `dcfurs.nrows` in length, each elemnent of which describes one row of the matrix. If the row
 is an integer, it is interpreted as a bitmap that would be passed to `dcfurs.set_row()`, or if
 the row is a `bytearray` then it will be interpreted as an array of PWM intensity values.
+
+This function can be implemented as a slightly more efficient version of:
+
+```
+    def set_frame(fbuf)
+        i = 0
+        for row in fbuf:
+            set_row(i, row)
+            i += 1
+```
 
 ### `dcfurs.has_pixel(row, col)`
 Checks if the pixel at the given row and colum exists in the LED matrix. Due to the shape
@@ -155,7 +182,7 @@ JSON Animations
 ---------------
 For simple animations that don't require user interraction, the frames can also be
 provided in JSON format. These animations should be placed in the `animations/`
-directory and named with a `.js` file extension. During initialization the
+directory and named with a `.json` file extension. During initialization the
 `animations` module will generate class definitions for each JSON file found.
 
 The JSON file should contain an array, with each element of the array containing
