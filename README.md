@@ -17,7 +17,7 @@ you to script the badge to do awesome things.
 
 ### Further Reading
 * Source code, schematics and documentation are available on [GitHub](https://github.com/oskirby/dc26-fur-scripts)
-* A web-based tool for creating JSON animations at http://dcfurs.liquidthex.com/
+* A web-based tool for creating JSON animations at http://dcfurs.liquidthex.com/defcon/
 
 Badge Module
 ------------
