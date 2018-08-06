@@ -107,10 +107,10 @@ def awoo():
     dcfurs.set_row(0, 0x00006)
     dcfurs.set_row(1, 0x11229)
     dcfurs.set_row(2, 0x2aa29)
-    dcfurs.set_row(3, 0x2aaa9)
+    dcfurs.set_row(3, 0x2aaaf)
     dcfurs.set_row(4, 0x11149)
     dcfurs.set_row(5, 0x00009)
-    dcfurs.set_row(6, 0x00006)
+    dcfurs.set_row(6, 0x00000)
 
 ## Render an emote from an ascii string
 def render(str):
