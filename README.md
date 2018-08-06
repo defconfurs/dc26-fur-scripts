@@ -4,8 +4,8 @@ DCFurs Badge Scripts
 The DC26 DefCon Furs badge is running a micropython environment that allows
 you to script the badge to do awesome things.
 
-At your disposal, you will find:
-* An STM32F411RET6 microcontroller running Micropython
+### Features Include
+* STM32F411RET6 microcontroller running Micropython
 * 32 Mbit SPI flash on SPI bus 3
 * 18x7 pixel LED matrix display
 * Two pushbutton switches located on the ears
@@ -15,8 +15,9 @@ At your disposal, you will find:
     - Azoteq IQS231A capacative touch controller at address 0x44
     - #badgelife shitty addon connector
 
-The source code, board schematics and further documenation can be found on GitHub at
-https://github.com/oskirby/dc26-fur-scripts
+### Further Reading
+* Source code, schematics and documentation are available on [GitHub](https://github.com/oskirby/dc26-fur-scripts)
+* A web-based tool for creating JSON animations at http://dcfurs.liquidthex.com/
 
 Badge Module
 ------------
