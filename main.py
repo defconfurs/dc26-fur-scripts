@@ -54,7 +54,7 @@ def ble():
 ## to have finished booting by now.
 if badge.ble:
     badge.ble.write("set: serial=0x%04x\r\n" % dcfurs.serial())
-    badge.ble.write("set: cooldown=%d\r\n", % settings.blecooldown)
+    badge.ble.write("set: cooldown=%d\r\n" % settings.blecooldown)
 
 ## Select the user's preferred boot animation.
 available = animations.all()
