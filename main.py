@@ -53,8 +53,8 @@ def ble():
 ## Program the serial number into the BLE module, which ought
 ## to have finished booting by now.
 if badge.ble:
-    badge.ble.write("set: serial=0x%04x\r\n" % dcfurs.serial())
-    badge.ble.write("set: cooldown=%d\r\n" % settings.blecooldown)
+    badge.ble_set("serial", "0x%04x" % dcfurs.serial())
+    badge.ble_set("cooldown", "%d" % settings.blecooldown)
 
 ## Select the user's preferred boot animation.
 available = animations.all()

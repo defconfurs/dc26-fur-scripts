@@ -29,6 +29,17 @@ pyb.delay(5)
 ble_enable.value(1)
 ble = UART(1, 115200)
 
+## Write variables with a little delay to make up
+## for the lack of flow control.
+def ble_set(name, value=None):
+    line = "set: " + name
+    if value:
+        line += "=" + value
+    line += "\r\n"
+    for ch in line:
+        ble.write(ch)
+        pyb.delay(1)
+
 ##-----------------------------------------------
 ## Pushbutton Class
 ##-----------------------------------------------
