@@ -54,4 +54,5 @@ LED Placements
 All of the LEDs on the front of the badge are oriented with the anode (positive) end of the
 LEDs oriented towards the top of the badge, and the cathode (negative) end of the LED
 towards the bottom of the badge.
- 
+
+![Front LED Matrix](img/dcfurs-front-matrix.png "Front LED Matrix")
