@@ -1,6 +1,9 @@
 Assembly Guide
 ==============
 
+For the adventerous, you can assemble the majority of the badge yourself with a steady paw
+and soldering iron. Hopefully you can find enough details here to bring your badge to life.
+
 Bill of Materials
 -----------------
 
@@ -20,7 +23,7 @@ Bill of Materials
 | RN1                       | 1        | [CAT16-331J4LF](https://www.mouser.com/ProductDetail/652-CAT16-331J4LF)                       | 4x330 Ohm Resistor Array |
 | RN3                       | 1        | [CAT16-472J4LF](https://www.mouser.com/ProductDetail/652-CAT16-472J4LF)                       | 4x4.7k Ohm Resistor Array |
 | R1,R2,R4                  | 3        | [ERJ-1GNJ471C](https://www.mouser.com/ProductDetail/667-ERJ-1GNJ471C)                         | 470 Ohm 0603 Resistor |
-| R8 through R25            | 18       | [ERJ-3GEYJ330V](https://www.mouser.com/ProductDetail/667-ERJ-3GEYJ330V)                       | What did we actually use? |
+| R8 through R25            | 18       | [ERJ-3EKF2700V](https://www.mouser.com/ProductDetail/667-ERJ-3EKF2700V)                       | 270 Ohm 0603 Resistor |
 | D1-0 through D7-18        | 112      | [150060GS75000](https://www.mouser.com/ProductDetail/710-150060GS75000)                       | 525nm Green 0603 LED |
 | Q1 through Q7             | 7        | [DMG2305UX-7](https://www.mouser.com/ProductDetail/621-DMG2305UX-7)                           | SOT-23 P-Channel MOSFET |
 | D1                        | 1        | [PRTR5V0U2X](https://www.mouser.com/ProductDetail/771-PRTR5V0U2X-T-R)                         | ESD Protection Diode |
@@ -31,6 +34,16 @@ Bill of Materials
 | J1                        | 1        | [10118193-0001LF](https://www.mouser.com/ProductDetail/649-10118193-0001LF)                   | USB Micro-B Connector |
 | SW1,SW2                   | 2        | [434331045822](https://www.digikey.com/product-detail/en/wurth-electronics-inc/434331045822/732-7055-1-ND/5225503) | Tactile Switch |
 | BT1                       | 1        | [BC12AAPC](https://www.digikey.com/product-detail/en/mpd-memory-protection-devices/BC12AAPC/BC12AAPC-ND/2439230) | 2xAA Battery Holder |
+
+The LEDs for the front matix, denoted D1-0 through D7-18 can be substituted for any color
+of your choosing as long as it's in an 0603 footprint. If you make a substitution of the
+LEDs you must chose an appropriate value for reisistors R8-RR25  to match the forward
+voltage of your LED.
+
+Using the LED forward voltage and current, the resistance is given by Ohm's Law
+`R = (3.3 - Vf) / I` However, you may find the badge exceptionally bright, and it's
+better to use lower current. For the production badges we aimed for 5mA of current
+`270 ohms = (3.3V - 2.7V) / 4.5mA`.
 
 Part Placements
 ---------------
