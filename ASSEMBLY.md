@@ -37,7 +37,7 @@ Bill of Materials
 
 The LEDs for the front matix, denoted D1-0 through D7-18 can be substituted for any color
 of your choosing as long as it's in an 0603 footprint. If you make a substitution of the
-LEDs you must chose an appropriate value for reisistors R8-RR25  to match the forward
+LEDs you must chose an appropriate value for reisistors R8-R25  to match the forward
 voltage of your LED.
 
 Using the LED forward voltage and current, the resistance is given by Ohm's Law
