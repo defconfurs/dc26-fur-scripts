@@ -91,11 +91,11 @@ while True:
             ble()
         elif badge.boop.event():
             if hasattr(anim, 'handles_boop'):
-    			if anim.handles_boop:
-    				anim.draw(boop=True)
+                if anim.handles_boop:
+                    anim.draw(boop=True)
             else:
-		        if settings.debug:
-		            micropython.mem_info()
+                if settings.debug:
+                    micropython.mem_info()
                 emote.boop()
                 ival = 1000
 
