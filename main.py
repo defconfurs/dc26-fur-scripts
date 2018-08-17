@@ -17,14 +17,14 @@ def blerx(args):
         nv = x.split('=', 1)
         name = nv[0]
         value = nv[1] if len(nv) > 1 else None
-        
+
         ## Handle the received stuff.
         if name == 'emote':
             ## Select a random emote.
             if (not value) or (value == 'random'):
                 emote.random()
                 pyb.delay(2500)
-            ## Parse a specific emote to draw. 
+            ## Parse a specific emote to draw.
             else:
                 emstr = ubinascii.unhexlify(value).decode("ascii")
                 emote.render(emstr)
@@ -90,15 +90,19 @@ while True:
         elif badge.ble.any():
             ble()
         elif badge.boop.event():
-            if settings.debug:
-                micropython.mem_info()
-            emote.boop()
-            ival = 1000
+            if hasattr(anim, 'handles_boop'):
+                if anim.handles_boop:
+                    anim.draw(boop=True)
+            else:
+                if settings.debug:
+                    micropython.mem_info()
+                emote.boop()
+                ival = 1000
 
         ## Pause for as long as long as both buttons are pressed.
         if badge.right.value() and badge.left.value():
             ival += 50
-        
+
         ## Run the animation timing
         if ival > 50:
             pyb.delay(50)
@@ -106,6 +110,6 @@ while True:
         else:
             pyb.delay(ival)
             ival = 0
-        
+
         ## Attempt to suspend the badge between animations
         badge.trysuspend()

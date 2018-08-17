@@ -8,6 +8,7 @@ from animations.life import life
 from animations.pong import pong
 from animations.maze import maze
 from animations.dgol import dgol
+from animations.dogjump import dogjump
 
 ## Dynamically import all the python files we can find.
 import os
