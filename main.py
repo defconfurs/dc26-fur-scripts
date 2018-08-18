@@ -90,9 +90,8 @@ while True:
         elif badge.ble.any():
             ble()
         elif badge.boop.event():
-            if hasattr(anim, 'handles_boop'):
-                if anim.handles_boop:
-                    anim.draw(boop=True)
+            if hasattr(anim, 'boop'):
+                anim.boop()
             else:
                 if settings.debug:
                     micropython.mem_info()

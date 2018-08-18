@@ -25,9 +25,8 @@ class dogjump:
 		self.score = 0
 		self.interval = 80
 		self.falling = False
-		self.handles_boop = True
 
-	def draw(self, boop=False):
+	def draw(self):
 		# refresh
 		dcfurs.clear()
 		# draw score
@@ -37,9 +36,12 @@ class dogjump:
 		# draw dog
 		draw_entity(self.dog)
 
+		# reset to the regular interval
+		self.interval = 80
+
 		# jump handling
 		# mid-jump
-		if not self.falling and self.jumping:
+		if self.jumping:
 			# ceiling hit: stop jumping, start falling
 			if self.dog[8][1] <= -3:
 				self.jumping = False
@@ -47,16 +49,6 @@ class dogjump:
 			# going up
 			else:
 				dog_move(self.dog, 1)
-		# dog jump
-	       	elif not self.falling and (badge.boop.event() or boop):
-			# first jump
-			if self.waiting:
-				self.score = 0
-				self.waiting = False
-			# start jumping
-			self.jumping = True
-			# going up
-			dog_move(self.dog, 1)
 		# dog gravity
 		elif self.falling:
 			# floor hit: stop falling
@@ -84,9 +76,21 @@ class dogjump:
 						self.obstacle = [(17, 4), (17, 3)]
 						self.jumping = False
 						self.waiting = True
-						self.interval = 100
+						self.interval = 1000
 						self.falling = False
 
+	def boop(self):
+		# dog jump
+		if not self.falling:
+			# first jump
+			if self.waiting:
+				self.score = 0
+				self.waiting = False
+				self.interval = 80
+			# start jumping
+			else:
+				self.interval = 10
+				self.jumping = True
 
 def draw_entity(entity):
 	for point in entity:

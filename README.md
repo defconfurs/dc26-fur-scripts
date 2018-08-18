@@ -137,11 +137,17 @@ with each class in this module providing a unique animation.
 Every class provided by this module must present the following interface.
 
 ### `draw()`
-This function is called to render the next frame of the animation to the LED matrix.
+This mandatory method is called to render the next frame of the animation to the
+LED matrix.
 
 ### `interval`
-The animation must provide this variable to define the time, in milliseconds, until the
-call should be made to the `draw()` function.
+This mandatory variable must be provided by the animation to define the time, in
+milliseconds until the next call to the `draw()` method.
+
+### `boop()`
+The animation may override the default behavior of the capacative touch events by
+defining a `boop()` method. This optional method will be called once for each touch
+event detected.
 
 Python Animations
 -----------------
