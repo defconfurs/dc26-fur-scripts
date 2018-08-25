@@ -76,14 +76,23 @@ font7bit = {
     '~':bytearray([0x08,0x04,0x08,0x04]),
 }
 
-def owo():
-    dcfurs.set_row(0, 0x1c00e)
-    dcfurs.set_row(1, 0x22011)
-    dcfurs.set_row(2, 0x22851)
-    dcfurs.set_row(3, 0x22b51)
-    dcfurs.set_row(4, 0x22491)
-    dcfurs.set_row(5, 0x22011)
-    dcfurs.set_row(6, 0x1c00e)
+def awoo():
+    dcfurs.set_row(0, 0x11226)
+    dcfurs.set_row(1, 0x2aa29)
+    dcfurs.set_row(2, 0x2aaa9)
+    dcfurs.set_row(3, 0x1114f)
+    dcfurs.set_row(4, 0x00009)
+    dcfurs.set_row(5, 0x00009)
+    dcfurs.set_row(6, 0x00000)
+
+def beep():
+    dcfurs.set_row(0, 0x0e6ce)
+    dcfurs.set_row(1, 0x12b52)
+    dcfurs.set_row(2, 0x126d2)
+    dcfurs.set_row(3, 0x0e24e)
+    dcfurs.set_row(4, 0x026d2)
+    dcfurs.set_row(5, 0x02012)
+    dcfurs.set_row(6, 0x0200e)
 
 def boop():
     dcfurs.set_row(0, 0x0e48e)
@@ -94,35 +103,41 @@ def boop():
     dcfurs.set_row(5, 0x02012)
     dcfurs.set_row(6, 0x0200e)
 
-def beep():
-    dcfurs.set_row(0, 0x0e00e)
-    dcfurs.set_row(1, 0x12492)
-    dcfurs.set_row(2, 0x12b52)
-    dcfurs.set_row(3, 0x0e6ce)
-    dcfurs.set_row(4, 0x02d92)
-    dcfurs.set_row(5, 0x02012)
-    dcfurs.set_row(6, 0x0200e)
+def derp():
+    dcfurs.set_row(0, 0x1d18e)
+    dcfurs.set_row(1, 0x26a52)
+    dcfurs.set_row(2, 0x24bd2)
+    dcfurs.set_row(3, 0x1c852)
+    dcfurs.set_row(4, 0x04b92)
+    dcfurs.set_row(5, 0x04012)
+    dcfurs.set_row(6, 0x0400e)
 
-def awoo():
-    dcfurs.set_row(0, 0x00006)
-    dcfurs.set_row(1, 0x11229)
-    dcfurs.set_row(2, 0x2aa29)
-    dcfurs.set_row(3, 0x2aaaf)
-    dcfurs.set_row(4, 0x11149)
-    dcfurs.set_row(5, 0x00009)
-    dcfurs.set_row(6, 0x00000)
+def owo():
+    dcfurs.set_row(0, 0x1c00e)
+    dcfurs.set_row(1, 0x22011)
+    dcfurs.set_row(2, 0x22851)
+    dcfurs.set_row(3, 0x22b51)
+    dcfurs.set_row(4, 0x22491)
+    dcfurs.set_row(5, 0x22011)
+    dcfurs.set_row(6, 0x1c00e)
 
 ## Render an emote from an ascii string
 def render(str):
     ## Check for special cases
+    if str == 'awoo':
+        awoo()
+        return
+    if str == 'beep':
+        beep()
+        return
     if str == 'boop':
         boop()
         return
+    if str == 'derp':
+        derp()
+        return
     if str == 'owo':
         owo()
-        return
-    if str == 'awoo':
-        awoo()
         return
 
     ## Otherwise, generate from our character set.
@@ -148,7 +163,7 @@ def render(str):
 
 prebuilt = [
     owo,
-    "\./"
+    "\./",
     "X.X",
     "-.-",
     '"."',
