@@ -94,12 +94,15 @@ while True:
             if settings.debug:
                 micropython.mem_info()
             rnd = random.randrange(100)
-            ## 5% chance of a "derp"
-            if  rnd < 5:
-                emote.derp()
+            ## 5% chance of a "awoo"
+            elif rnd < 5:
+                emote.awoo()
             ## 5% chance of a "beep"
             elif rnd < 10:
                 emote.beep()
+            ## 5% chance of a "derp"
+            if  rnd < 15:
+                emote.derp()
             ## "boop" all other times
             else:
                 emote.boop()
