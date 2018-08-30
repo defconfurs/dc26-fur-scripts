@@ -19,7 +19,7 @@ bootanim = "scroll"
 # Whether the maze animation should autosolve.
 mazesolver = True
 
-# Font (from the fonts/ directory) that the emotes and the
+# Font (from the fonts\ directory) that the emotes and the
 # scrolling text animation uses, respectively.
 emotefont = "font7bit"
 scrollfont = "font5var"
