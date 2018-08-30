@@ -1,4 +1,6 @@
 # main.py -- put your code here!
+print('Booting...')
+
 import pyb
 import dcfurs
 import badge
@@ -6,9 +8,7 @@ import emote
 import micropython
 import settings
 import ubinascii
-import random
-
-print("Booting...")
+from random import randrange
 import animations
 
 ## Handle events from the BLE module.
@@ -25,7 +25,7 @@ def blerx(args):
             if (not value) or (value == 'random'):
                 emote.random()
                 pyb.delay(2500)
-            ## Parse a specific emote to draw. 
+            ## Parse a specific emote to draw.
             else:
                 emstr = ubinascii.unhexlify(value).decode("ascii")
                 emote.render(emstr)
@@ -54,8 +54,8 @@ def ble():
 ## Program the serial number into the BLE module, which ought
 ## to have finished booting by now.
 if badge.ble:
-    badge.ble.write("set: serial=0x%04x\r\n" % dcfurs.serial())
-    badge.ble.write("set: cooldown=%d\r\n" % settings.blecooldown)
+    badge.ble_set("serial", "0x%04x" % dcfurs.serial())
+    badge.ble_set("cooldown", "%d" % settings.blecooldown)
 
 ## Select the user's preferred boot animation.
 available = animations.all()
@@ -67,6 +67,8 @@ if settings.bootanim:
         pass
 
 anim = available[selected]()
+
+## Main execution loop
 while True:
     anim.draw()
     ival = anim.interval
@@ -91,22 +93,25 @@ while True:
         elif badge.ble.any():
             ble()
         elif badge.boop.event():
-            if settings.debug:
-                micropython.mem_info()
-            rnd = random.randrange(100)
-            ## 5% chance of a "awoo"
-            elif rnd < 5:
-                emote.awoo()
-            ## 5% chance of a "beep"
-            elif rnd < 10:
-                emote.beep()
-            ## 5% chance of a "derp"
-            if  rnd < 15:
-                emote.derp()
-            ## "boop" all other times
+            if hasattr(anim, 'boop'):
+                anim.boop()
             else:
-                emote.boop()
-            ival = 1000
+                if settings.debug:
+                    micropython.mem_info()
+                rnd = randrange(100)
+                ## 5% chance of a "awoo"
+                if rnd < 5:
+                    emote.awoo()
+                ## 5% chance of a "beep"
+                elif rnd < 10:
+                    emote.beep()
+                ## 5% chance of a "derp"
+                elif  rnd < 15:
+                    emote.derp()
+                ## "boop" all other times
+                else:
+                    emote.boop()
+                ival = 1000
 
         ## Pause for as long as long as both buttons are pressed.
         if badge.right.value() and badge.left.value():

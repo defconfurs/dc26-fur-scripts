@@ -1,3 +1,5 @@
+print('Loading animations\__init__.py...')
+
 ## Load the python animations
 from animations.scroll import scroll
 from animations.fur import fur
@@ -19,7 +21,7 @@ import dcfurs
 ## Template class for JSON-encoded animations
 class __jsonanim__:
     def __init__(self):
-        fh = open(self.path, "r")
+        fh = open(self.path, 'r')
         self.framenum = 0
         self.js = ujson.load(fh)
         self.intensity = bytearray([0, 2, 3, 4, 6, 9, 12, 17, 24, 34, 47, 66, 92, 130, 182, 255])
@@ -48,7 +50,6 @@ for filename in files:
     if filename[:2] != "__" and filename[-5:] == ".json":
         classname = filename[:-5]
         globals()[classname] = type(classname, (__jsonanim__,), {'path', "/flash/animations/" + filename})
-
 
 ## Return a list of all animation classes
 def all():

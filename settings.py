@@ -19,6 +19,11 @@ bootanim = "scroll"
 # Whether the maze animation should autosolve.
 mazesolver = True
 
+# Font (from the fonts/ directory) that the emotes and the
+# scrolling text animation uses, respectively.
+emotefont = "font7bit"
+scrollfont = "font5var"
+
 # The base cooldown timing (in milliseconds) for BLE messages,
 # which is applied to special beacons received with a high RSSI.
 # Beacons with weaker signals are subject to a cooldown which
