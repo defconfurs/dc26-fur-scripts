@@ -1,12 +1,17 @@
 print('Loading fonts\__init__.py...')
 
-import os
+import gc
+from os import listdir
 
-fontdict = dict()
-for module in os.listdir(__name__):
-    if module == '__init__.py' or module[-3:] != '.py':
-        continue
-    handle = __import__(__name__ + '.' + module[:-3], globals(), locals(), ['font'], 0)
-    fontdict[module[:-3]] = handle.font
-    print('  ' + module[:-3] + ' font loaded')
-del handle, module, os
+# Load all fonts from directory
+fontdict = {}
+for filename in listdir(__name__):
+    if filename[:2] != '__' and filename[-3:] == '.py':
+        classname = filename[:-3]
+        handle = __import__(__name__ + '.' + classname, globals(), locals(), ['font'], 0)
+        # Build dictionary of font names and their respective dictionaries.
+        fontdict[classname] = handle.font
+        del handle
+        print('  ' + classname + ' font loaded')
+del classname, listdir, filename
+gc.collect()

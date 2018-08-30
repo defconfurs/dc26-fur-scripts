@@ -69,6 +69,7 @@ if settings.bootanim:
 anim = available[selected]()
 
 ## Main execution loop
+print('Starting main loop...')
 while True:
     anim.draw()
     ival = anim.interval
