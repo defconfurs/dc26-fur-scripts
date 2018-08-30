@@ -16,8 +16,9 @@ class scroll:
         for char in self.text:
             font = fonts.fontdict[settings.scrollfont]
             if char in font:
-                self.scrollbuf += font[char]
-    
+                if len(font[char]) > 0:
+                    self.scrollbuf += font[char] + bytearray([0x00])
+
     def draw(self):
         dcfurs.clear()
         for x in range(0, dcfurs.ncols):
@@ -26,4 +27,3 @@ class scroll:
                 if (colbits & (1 << y)) != 0:
                     dcfurs.set_pixel(x, y, 0xff)
         self.shift = (self.shift + 1) % len(self.scrollbuf)
-

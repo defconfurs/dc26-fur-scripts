@@ -75,7 +75,7 @@ def render(str):
     dcfurs.clear()
 
     ## Draw the left character.
-    column = int((8 - len(lbits))/2)
+    column = int((8 - len(lbits)) / 2)
     for colbits in lbits:
         for y in range(0, dcfurs.nrows):
             if (colbits & (1 << y)) != 0:
@@ -83,11 +83,11 @@ def render(str):
         column = column + 1
 
     ## Draw the right character.
-    column = int((28 - len(rbits) + 1)/2)
+    column = int((28 - len(rbits) + 1) / 2)
     for colbits in rbits:
         for y in range(0, dcfurs.nrows):
             if (colbits & (1 << y)) != 0:
-                dcfurs.set_pixel(column,y,0xff)
+                dcfurs.set_pixel(column, y, 0xff)
         column = column + 1
 
 prebuilt = [
