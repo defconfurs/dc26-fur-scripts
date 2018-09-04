@@ -1,3 +1,7 @@
+# Slightly modified Micro Machina font by zephram.
+# CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+# https://fontstruct.com/fontstructions/show/1547364/micro-machina
+
 font = {
     ' ':bytearray([0x00,0x00]),
     '!':bytearray([0x17]),
