@@ -10,6 +10,7 @@ $TAPERSCALE = 1;    // taper multiplier for front face, a value of 1 is a
                     // straight-walled hole, a value of 1.5 approximates the
                     // orignal taper (with simpler geometry)
 $HASCLIP = true;    // print side clips to hold shades to board
+$TYPE = 4;
 
 
 module fillet(r, h) {
@@ -28,9 +29,9 @@ module fillet(r, h) {
 // 603 package   1.55, 0.85, 0.45
 // 603 pad       (0.6 * 2) + 0.9, 0.9, n/a
 // 0.55 pad slack
-module smd() {    
-    for(y = [0 : 6]) {
-        for(x = [0 : 8]) {
+module smd(xlist = [0 : 8], ylist = [0 : 6]) {    
+    for(y = ylist) {
+        for(x = xlist) {
             if(!(
                 ((x == 0) && ((y == 0) || (y == 6))) ||
                 ((x == 7) && ((y == 5) || (y == 6))) ||
@@ -88,52 +89,114 @@ module clip() {
 
 module halfshade() {
     difference() {
-        union() {
-            difference() {
-                translate([0, 0, 0]) { cube([102 / 2, 32, 1.2]); }
+        translate([0, 0, 0]) { cube([102 / 2, 32, 1.2]); }
 
-                // top corner
-                translate([0, 0, (1.2 + 2) / 2 - 1])
-                    rotate([0, 0, 0])
-                       fillet(8, 1.2 + 2);
-                // bottom corner
-                translate([0, 32, (1.2 + 2) / 2 - 1])
+        // top corner
+        translate([0, 0, (1.2 + 2) / 2 - 1])
+            rotate([0, 0, 0])
+               fillet(8, 1.2 + 2);
+        // bottom corner
+        translate([0, 32, (1.2 + 2) / 2 - 1])
+            rotate([180, 0, 0])
+                fillet(10, 1.2 + 2);
+        // nosepiece
+        translate([102 / 2, 47.08, (1.2 + 2) / 2 - 1])
+            scale([1, 1.08, 1])
+            cylinder(d = 42.8, h = 1.2 + 2, center = true);
+        difference() {
+            union() {
+                translate([47, 32, (1.2 + 2) / 2 - 1])
+                    rotate([180, 180, 0])
+                        fillet(20, 1.2 + 2);
+                translate([55, 32, (1.2 + 2) / 2 - 1])
                     rotate([180, 0, 0])
-                        fillet(10, 1.2 + 2);
-                // nosepiece
-                translate([102 / 2, 47.08, (1.2 + 2) / 2 - 1])
-                    scale([1, 1.08, 1])
-                    cylinder(d = 42.8, h = 1.2 + 2, center = true);
-                difference() {
-                    union() {
-                        translate([47, 32, (1.2 + 2) / 2 - 1])
-                            rotate([180, 180, 0])
-                                fillet(20, 1.2 + 2);
-                        translate([55, 32, (1.2 + 2) / 2 - 1])
-                            rotate([180, 0, 0])
-                                fillet(20, 1.2 + 2);
-                    }
-                    
-                    translate([(102 / 2), 18, (1.2 + 2) / 2 - 1])
-                        cube([50, 20, 1.2 + 2], center = true);
-                }
+                        fillet(20, 1.2 + 2);
             }
-
-            if($HASCLIP) { 
-                translate([-3.8, 0, 0])
-                    clip();
-            }
+            
+            translate([(102 / 2), 18, (1.2 + 2) / 2 - 1])
+                cube([50, 20, 1.2 + 2], center = true);
         }
+    }
 
-        smd();
+    if($HASCLIP) { 
+        translate([-3.8, 0, 0])
+            clip();
     }
 }
 
 
 // MAIN
 //translate([0, 16.3, 17.5]) { import("led-shield.stl"); }
-halfshade();
-translate([101.999, 0, 0]) {
-    mirror([1, 0, 0])
+difference () {
+    union() {
         halfshade();
+        translate([101.999, 0, 0]) {
+            mirror([1, 0, 0]) {
+                halfshade();
+            }
+        }
+    }
+
+    // grid holes
+    if($TYPE == 1) {
+        smd();
+        translate([101.999, 0, 0]) {
+            mirror([1, 0, 0]) {
+                smd();
+            }
+        }
+    }
+    // "dive goggles"
+    else if($TYPE == 2) {
+        hull() {
+            smd();
+        }
+        hull() {
+            translate([101.999, 0, 0]) {
+                mirror([1, 0, 0]) {
+                    smd();
+                }
+            }
+        }
+    }
+    // outline
+    else if($TYPE == 3) {
+        translate([(102 - (102 * 0.96)) / 2, (32 - (32 * 0.90)) / 2 - 0.1, -1]) {
+            scale([.96, .897, 2]) {
+                $HASCLIP = false;
+                halfshade();
+                translate([101.999, 0, 0]) {
+                    mirror([1, 0, 0])
+                        halfshade();
+                }
+            }
+        }
+    }
+    // horizontal slats
+    else if($TYPE == 4) {
+        for(ylist = [0 : 6]) {
+            if(ylist < 5 ) {
+                hull() {
+                    smd([0, 1], ylist);
+                    translate([101.999, 0, 0]) {
+                        mirror([1, 0, 0]) {
+                            smd([0, 1], ylist);
+                        }
+                    }
+                }
+            }
+            else {
+                hull() {
+                    smd([0, 1, 5, 6], ylist);
+                }
+                hull() {
+                    translate([101.999, 0, 0]) {
+                        mirror([1, 0, 0]) {
+                            smd([0, 1, 5, 6], ylist);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
