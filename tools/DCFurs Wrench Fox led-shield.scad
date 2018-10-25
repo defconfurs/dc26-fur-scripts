@@ -10,7 +10,13 @@ $TAPERSCALE = 1;    // taper multiplier for front face, a value of 1 is a
                     // straight-walled hole, a value of 1.5 approximates the
                     // orignal taper (with simpler geometry)
 $HASCLIP = true;    // print side clips to hold shades to board
-$TYPE = 4;
+$TYPE = 1;          // cutout type:
+                    //   1 = SMD grid holes
+                    //   2 = "dive goggles"
+                    //   3 = outline
+                    //   4 = horizontal slats
+                    //   5 = full horizontal slats
+                    //   6 = vertical slats
 
 
 module fillet(r, h) {
@@ -137,7 +143,7 @@ difference () {
         }
     }
 
-    // grid holes
+    // SMD grid holes
     if($TYPE == 1) {
         smd();
         translate([101.999, 0, 0]) {
@@ -175,6 +181,21 @@ difference () {
     // horizontal slats
     else if($TYPE == 4) {
         for(ylist = [0 : 6]) {
+            hull() {
+                smd([0, 1, 5, 6, 8], ylist);
+            }
+            translate([101.999, 0, 0]) {
+                mirror([1, 0, 0]) {
+                    hull() {
+                        smd([0, 1, 5, 6, 8], ylist);
+                    }
+                }
+            }
+        }
+    }
+    // full horizontal slats
+    else if($TYPE == 5) {
+        for(ylist = [0 : 6]) {
             if(ylist < 5 ) {
                 hull() {
                     smd([0, 1], ylist);
@@ -194,6 +215,21 @@ difference () {
                         mirror([1, 0, 0]) {
                             smd([0, 1, 5, 6], ylist);
                         }
+                    }
+                }
+            }
+        }
+    }
+    // vertical slats
+    else if($TYPE == 6) {
+        for(xlist = [0 : 8]) {
+            hull() {
+                smd(xlist, [0 : 6]);
+            }
+            translate([101.999, 0, 0]) {
+                mirror([1, 0, 0]) {
+                    hull() {
+                        smd(xlist, [0 : 6]);
                     }
                 }
             }
