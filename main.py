@@ -1,4 +1,6 @@
 # main.py -- put your code here!
+print('Booting...')
+
 import pyb
 import dcfurs
 import badge
@@ -6,8 +8,7 @@ import emote
 import micropython
 import settings
 import ubinascii
-
-print("Booting...")
+from random import randrange
 import animations
 
 ## Handle events from the BLE module.
@@ -66,6 +67,9 @@ if settings.bootanim:
         pass
 
 anim = available[selected]()
+
+## Main execution loop
+print('Starting main loop...')
 while True:
     anim.draw()
     ival = anim.interval
@@ -95,7 +99,19 @@ while True:
             else:
                 if settings.debug:
                     micropython.mem_info()
-                emote.boop()
+                rnd = randrange(100)
+                ## 5% chance of a "awoo"
+                if rnd < 5:
+                    emote.awoo()
+                ## 5% chance of a "beep"
+                elif rnd < 10:
+                    emote.beep()
+                ## 5% chance of a "derp"
+                elif  rnd < 15:
+                    emote.derp()
+                ## "boop" all other times
+                else:
+                    emote.boop()
                 ival = 1000
 
         ## Pause for as long as long as both buttons are pressed.

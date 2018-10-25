@@ -8,16 +8,22 @@
 sleeptimeout = 900000
 
 # The default banner message to print in the scroll.py animation.
-banner = "DEFCON Furs"
+#banner = ''.join([chr(i) for i in range(32, 126)])
+banner = 'DEFCON Furs'
 
 # Enable extra verbose debug messages.
 debug = False
 
 # The animation to play at boot.
-bootanim = "scroll"
+bootanim = 'scroll'
 
 # Whether the maze animation should autosolve.
 mazesolver = True
+
+# Font (from the fonts\ directory) that the emotes and the
+# scrolling text animation uses, respectively.
+emotefont = 'font7bit'
+scrollfont = 'font5var'
 
 # The base cooldown timing (in milliseconds) for BLE messages,
 # which is applied to special beacons received with a high RSSI.
