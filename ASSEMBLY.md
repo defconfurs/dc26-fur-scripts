@@ -9,7 +9,7 @@ Bill of Materials
 
 | Designator                | Quantity | Part Number                                                                                   | Description |
 |---------------------------|----------|-----------------------------------------------------------------------------------------------|-------------|
-| IC1                       | 1        | [STM32F411RET6](https://www.mouser.com/ProductDetail/511-STM32F401RET6)                       | STM32F4 Microcontroller |
+| IC1                       | 1        | [STM32F411RET6](https://www.mouser.com/ProductDetail/511-STM32F411RET6)                       | STM32F4 Microcontroller |
 | IC2                       | 1        | [AAT1217ICA-3.3-T1](https://www.mouser.com/ProductDetail/873-AAT1217ICA3.3T1)                 | Boost Converter |
 | IC3                       | 1        | [MMA7660FCR1](http://www.newark.com/nxp/mma7660fct/3-axis-accelerometer-1-5g-dfn/dp/74P0443?st=MMA7660) | Accelerometer |
 | IC4                       | 1        | [MIC5504-3.3](https://www.mouser.com/ProductDetail/998-MIC5504-3.3YM5TR)                      | 3.3V LDO Regulator |
@@ -22,7 +22,7 @@ Bill of Materials
 | C7,C11,C12                | 3        | [GCM1885C1H120JA16D](https://www.mouser.com/ProductDetail/81-GCM1885C1H120JA6D)               | 12pF MLCC Capacitor |
 | RN1                       | 1        | [CAT16-331J4LF](https://www.mouser.com/ProductDetail/652-CAT16-331J4LF)                       | 4x330 Ohm Resistor Array |
 | RN3                       | 1        | [CAT16-472J4LF](https://www.mouser.com/ProductDetail/652-CAT16-472J4LF)                       | 4x4.7k Ohm Resistor Array |
-| R1,R2,R4                  | 3        | [ERJ-1GNJ471C](https://www.mouser.com/ProductDetail/667-ERJ-1GNJ471C)                         | 470 Ohm 0603 Resistor |
+| R1,R2,R3,R4               | 4        | [ERJ-1GNJ471C](https://www.mouser.com/ProductDetail/667-ERJ-3GEYJ471V)                        | 470 Ohm 0603 Resistor |
 | R8 through R25            | 18       | [ERJ-3EKF2700V](https://www.mouser.com/ProductDetail/667-ERJ-3EKF2700V)                       | 270 Ohm 0603 Resistor |
 | D1-0 through D7-18        | 112      | [150060GS75000](https://www.mouser.com/ProductDetail/710-150060GS75000)                       | 525nm Green 0603 LED |
 | Q1 through Q7             | 7        | [DMG2305UX-7](https://www.mouser.com/ProductDetail/621-DMG2305UX-7)                           | SOT-23 P-Channel MOSFET |
