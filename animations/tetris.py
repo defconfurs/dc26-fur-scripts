@@ -23,6 +23,28 @@ class tetris:
         self.speed = 20
         self.counter = 0
         self.forceDown = False
+        self.debugDisplay = [
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+        ]
+        self.debugDefault = self.debugDisplay
+        self.debugDisplayText = ""
         # print("Setup")
         self.tetromino = [
             [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
@@ -97,25 +119,38 @@ class tetris:
                 self.currentPiece = random.randint(0,6)
         # Draw things
         dcfurs.clear()
-
-        for y in range(0, self.rowMax):
-            for x in range(0, self.colMax):
+        if self.counter == 0:
+            print("\x1B\x5B2J", end="")
+            print("\x1B\x5BH", end="")
+            self.debugDisplay = self.debugDefault
+        for x in range(0, self.colMax):
+            for y in range(0, self.rowMax):
                 thisInd = (x*self.rowMax) + y
                 if self.board[thisInd] == 1:
                 # if y == 0 or y == (self.rowMax - 1) or x == 0:
                     dcfurs.set_pixel(x, y, 254)
 
+        if self.counter == 0:
+            for x in range(0, self.colMax):
+                for y in range(0, self.rowMax):
+                    thisInd = (x*self.rowMax) + y
+                    if self.board[thisInd] == 1:
+                        self.debugDisplay[x][y] = 1
+                    else:
+                        self.debugDisplay[x][y] = 0
         self.drawPiece(self.currentPiece, self.currentX, self.currentY, self.currentRotation)
 
-            # Rotate all pieces
-            # self.currentRotation += 1
-            # if self.currentRotation > 3:
-            #     self.currentRotation = 0
-            #     self.currentPiece += 1
-            #     if self.currentPiece > 6:
-            #         self.currentPiece = 0
-            # self.drawPiece(self.currentPiece, 11, 2, self.currentRotation)
-        # if forceDown:
+        if self.counter == 0:
+            self.debugDisplayText = ""
+            for x in reversed(range(0, self.colMax)):
+                self.debugDisplayText = self.debugDisplayText + "\n"
+                for y in range(0, self.rowMax):
+                    if self.debugDisplay[x][y] == 1:
+                        self.debugDisplayText = self.debugDisplayText + " 1"
+                    else:
+                        self.debugDisplayText = self.debugDisplayText + " 0"
+            print(self.debugDisplayText)
+
 
     def doesPieceFit(self, piece, x, y, r):
         for tx in range(0, 4):
@@ -168,5 +203,6 @@ class tetris:
                 if self.tetromino[piece][self.rotate(tx, ty, r)] == 1:
                     thisX = int(tx + x)
                     thisY = int(ty + y)
+                    self.debugDisplay[thisX][thisY] = 1
                     dcfurs.set_pixel(thisX, thisY, on)
 
