@@ -10,7 +10,7 @@ class tetris:
         self.interval = 20
         self.leftThreshold = -20
         self.rightThreshold = 20
-        self.zThreshold = -50
+        self.zThreshold = -70
         self.holdingZ = False
         self.holdingLeft = False
         self.holdingRight = False
@@ -23,29 +23,11 @@ class tetris:
         self.speed = 20
         self.counter = 0
         self.forceDown = False
-        self.debugDisplay = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-        ]
+
+        self.displayConsole = True
+        self.debugDisplay = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
         self.debugDefault = self.debugDisplay
         self.debugDisplayText = ""
-        # print("Setup")
         self.tetromino = [
             [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
             [0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,0],
@@ -60,13 +42,7 @@ class tetris:
         for y in range(0, self.rowMax):
             for x in range(0, self.colMax):
                 thisInd = (x*self.rowMax) + y
-                print("thisInd: " + str(thisInd) + " | x: " + str(x) + "  | y: " + str(y))
-                # if y == 0 or y == (self.rowMax - 1) or x == 0:
-                #     self.board[thisInd] = 1
-                # else:
-                #     self.board[(x*self.rowMax + y)] = 0
     def draw(self):
-        # print("Draw")
         (self.tx, self.ty, self.tz) = badge.imu.filtered_xyz()
         # print(str(self.tx) + ":" + str(self.ty) + ":" + str(self.tz))
         self.counter += 1
@@ -119,7 +95,7 @@ class tetris:
                 self.currentPiece = random.randint(0,6)
         # Draw things
         dcfurs.clear()
-        if self.counter == 0:
+        if self.counter == 0 and self.displayConsole == True:
             print("\x1B\x5B2J", end="")
             print("\x1B\x5BH", end="")
             self.debugDisplay = self.debugDefault
@@ -127,10 +103,9 @@ class tetris:
             for y in range(0, self.rowMax):
                 thisInd = (x*self.rowMax) + y
                 if self.board[thisInd] == 1:
-                # if y == 0 or y == (self.rowMax - 1) or x == 0:
                     dcfurs.set_pixel(x, y, 254)
 
-        if self.counter == 0:
+        if self.counter == 0 and self.displayConsole == True:
             for x in range(0, self.colMax):
                 for y in range(0, self.rowMax):
                     thisInd = (x*self.rowMax) + y
@@ -140,19 +115,20 @@ class tetris:
                         self.debugDisplay[x][y] = 0
         self.drawPiece(self.currentPiece, self.currentX, self.currentY, self.currentRotation)
 
-        if self.counter == 0:
+        if self.counter == 0 and self.displayConsole == True:
             self.debugDisplayText = ""
             for x in reversed(range(0, self.colMax)):
                 self.debugDisplayText = self.debugDisplayText + "\n"
                 for y in range(0, self.rowMax):
                     if self.debugDisplay[x][y] == 1:
-                        self.debugDisplayText = self.debugDisplayText + " 1"
+                        self.debugDisplayText = self.debugDisplayText + " *"
                     else:
-                        self.debugDisplayText = self.debugDisplayText + " 0"
+                        self.debugDisplayText = self.debugDisplayText + " -"
             print(self.debugDisplayText)
 
 
     def doesPieceFit(self, piece, x, y, r):
+        # print("piece: " + str(piece) + " | x: " + str(x) + " | y: " + str(y) + " | r: " + str(r))
         for tx in range(0, 4):
             for ty in range(0, 4):
                 ind = self.rotate(tx, ty, r)
@@ -160,7 +136,7 @@ class tetris:
                 # fInd = (ty + y) * self.rowMax + (tx + x)
                 fInd = (tx + x) * self.rowMax + (ty + y)
                 # print("Index: " + str(ind))
-                if ty + y >= -1 and ty + y < self.rowMax + 1:
+                if (ty + y) >= -1 and (ty + y) < (self.rowMax + 1):
                     if tx + x >= -1 and tx + x < self.colMax + 1:
                         # If the tetromino is within the playing field return false if any of it overlaps with an existing led
                         if ind > len(self.tetromino[piece]):
@@ -171,15 +147,17 @@ class tetris:
                             print("OUT OF BOUNDS!!!!")
                             print(str(fInd) + " > " + str(len(self.board)))
                             return False
-
-                        if self.tetromino[piece][ind - 1] == 1 and self.board[fInd - 1] == 1:
-                            print("Piece[" + str(piece) + "][" + str(ind) + "]: " + str(self.tetromino[piece][ind]) + " == 1 and board[" + str(fInd) + "]: " + str(self.board[fInd]) + " == 1")
+                        # Piece collision detection
+                        if self.tetromino[piece][ind] == 1 and self.board[fInd] == 1:
+                            print("OUT OF BOUNDS: Existing Tetromino")
                             return False
+                    # Vertical bounds
                     else:
-                        # print("Piece[" + str(piece) + "][" + str(ind) + "]: " + str(self.tetromino[piece][ind]) + " == 1 and board[" + str(fInd) + "]: " + str(self.board[fInd]) + " == 1")
+                        print("OUT OF BOUNDS: Vertical")
                         return False
+                # Horizontal bounds
                 else:
-                    # print("Piece[" + str(piece) + "][" + str(ind) + "]: " + str(self.tetromino[piece][ind]) + " == 1 and board[" + str(fInd) + "]: " + str(self.board[fInd]) + " == 1")
+                    print("OUT OF BOUNDS: Horizontal")
                     return False
         return True
 
@@ -203,6 +181,9 @@ class tetris:
                 if self.tetromino[piece][self.rotate(tx, ty, r)] == 1:
                     thisX = int(tx + x)
                     thisY = int(ty + y)
-                    self.debugDisplay[thisX][thisY] = 1
+                    if self.displayConsole == True:
+                        if thisX >= 0 and thisX <= self.rowMax:
+                            if thisY >= 0 and thisY <= self.colMax:
+                                self.debugDisplay[thisX][thisY] = 1
                     dcfurs.set_pixel(thisX, thisY, on)
 
